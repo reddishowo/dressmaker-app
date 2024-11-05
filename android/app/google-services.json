@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "796226080366",
+    "project_id": "dressmaker-app",
+    "storage_bucket": "dressmaker-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796226080366:android:23d8c842e3b2ab2031e07f",
+        "android_client_info": {
+          "package_name": "com.example.clothing_store"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJWhRhKK9Eu_lYjLVXxlQxzpBKEsbT7Sw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
