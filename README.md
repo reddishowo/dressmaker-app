@@ -1,6 +1,6 @@
-# clothing_store
+## AVOID PUSH IN MAIN BRANCH, CREATE A NEW BRANCH INSTEAD OF PUSHING TO THIS BRANCH ! ! !
 
-A new Flutter project.
+# dressmaker-app
 
 ## Getting Started
 
