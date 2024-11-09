@@ -1,8 +1,8 @@
-import 'package:clothing_store/app/data/services/authentication_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:clothing_store/app/data/services/authentication_controller.dart';
 
-class RegisterView extends GetView<AuthController> {
+class LoginView extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,33 +42,22 @@ class RegisterView extends GetView<AuthController> {
                   width: 220,
                 ),
               ),
+              const SizedBox(height: 40),
               _buildTextField(
-                controller: controller.usernameController,
-                icon: Icons.person_outline,
-                hint: 'Username',
-              ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: controller.emailController,
+                controller: controller.loginEmailController,
                 icon: Icons.mail_outline,
                 hint: 'Email',
               ),
               const SizedBox(height: 16),
               _buildTextField(
-                controller: controller.passwordController,
+                controller: controller.loginPasswordController,
                 icon: Icons.lock_outline,
                 hint: 'Password',
                 isPassword: true,
               ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: controller.phoneController,
-                icon: Icons.phone_outlined,
-                hint: 'Phone Number',
-              ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 50),
               ElevatedButton(
-                onPressed: controller.register,
+                onPressed: controller.login,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
@@ -79,7 +68,7 @@ class RegisterView extends GetView<AuthController> {
                   elevation: 0,
                 ),
                 child: const Text(
-                  'Register',
+                  'Masuk',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -89,14 +78,14 @@ class RegisterView extends GetView<AuthController> {
               const SizedBox(height: 16),
               Center(
                 child: GestureDetector(
-                  onTap: () => Get.toNamed('/login'),
+                  onTap: () => Get.toNamed('/register'),
                   child: RichText(
                     text: TextSpan(
-                      text: 'Sudah punya akun? ',
+                      text: 'Tidak punya akun? ',
                       style: TextStyle(color: Colors.grey[600]),
                       children: const [
                         TextSpan(
-                          text: 'Login',
+                          text: 'Register',
                           style: TextStyle(
                             color: Colors.blue,
                             fontWeight: FontWeight.w600,
