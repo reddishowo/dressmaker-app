@@ -3,9 +3,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'app/core/initial_bindings.dart';
 import 'app/routes/app_pages.dart';
+import 'package:get_storage/get_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init(); // Initialize GetStorage
   await Firebase.initializeApp(); // Initialize Firebase
   runApp(MyApp());
 }

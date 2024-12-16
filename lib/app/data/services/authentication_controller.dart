@@ -2,9 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import '../models/profile_model.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
+  final isFirstLaunch = false.obs;
+  final GetStorage _box = GetStorage();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -23,6 +27,7 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+        _checkFirstLaunch();
     // Listen to auth state changes
     ever(currentUser, handleInitialScreen);
     _setupAuthListener();
@@ -51,11 +56,26 @@ class AuthController extends GetxController {
     });
   }
 
+  void _checkFirstLaunch() {
+    // Check if this is the first launch
+    bool? firstLaunch = _box.read('first_launch');
+    
+    if (firstLaunch == null) {
+      // First time launching the app
+      isFirstLaunch.value = true;
+      _box.write('first_launch', false);
+    }
+  }
   // Handle initial screen based on auth state
   void handleInitialScreen(ProfileModel? user) {
-    if (user != null) {
+    if (isFirstLaunch.value) {
+      // If it's first launch, go to intro
+      Get.offAllNamed('/intro');
+    } else if (user != null) {
+      // If user is logged in and not first launch, go to home
       Get.offAllNamed('/home');
     } else {
+      // If no user and not first launch, go to login
       Get.offAllNamed('/login');
     }
   }
