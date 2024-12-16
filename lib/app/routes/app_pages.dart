@@ -1,5 +1,7 @@
 import 'package:clothing_store/app/modules/order/bindings/order_binding.dart';
 import 'package:clothing_store/app/modules/order/views/order_view.dart';
+import 'package:clothing_store/app/modules/profiles/bindings/profile_binding.dart';
+import 'package:clothing_store/app/modules/profiles/views/profile_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/home/bindings/home_binding.dart';
@@ -46,6 +48,11 @@ class AppPages {
       name: _Paths.LOGIN,
       page: () => LoginView(),
       binding: LoginBinding(),
+    ),
+        GetPage(
+      name: _Paths.PROFILE,
+      page: () => ProfileScreen(),
+      binding: ProfileBinding(),
     ),
   ];
 }

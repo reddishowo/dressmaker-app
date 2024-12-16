@@ -10,10 +10,8 @@ class HomeController extends GetxController {
   final Rx<String> activeOrder = ''.obs;
   final Rx<String> activeOrderStatus = ''.obs;
   final Rx<Map<String, String>> userSize = Rx<Map<String, String>>({});
-  final RxList<Map<String, dynamic>> recentOrders =
-      <Map<String, dynamic>>[].obs;
-  final RxList<Map<String, dynamic>> upcomingSchedules =
-      <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> recentOrders = <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> upcomingSchedules = <Map<String, dynamic>>[].obs;
   final RxInt selectedIndex = 0.obs;
 
   @override
@@ -43,11 +41,9 @@ class HomeController extends GetxController {
           .where('status', isEqualTo: 'Dalam Proses')
           .limit(1)
           .get();
-
       if (activeOrderDoc.docs.isNotEmpty) {
         activeOrder.value = activeOrderDoc.docs.first.data()['name'] ?? '';
-        activeOrderStatus.value =
-            activeOrderDoc.docs.first.data()['status'] ?? '';
+        activeOrderStatus.value = activeOrderDoc.docs.first.data()['status'] ?? '';
       }
     } catch (e) {
       print('Error loading active order: $e');
@@ -62,7 +58,6 @@ class HomeController extends GetxController {
           .collection('measurements')
           .doc('current')
           .get();
-
       if (sizeDoc.exists) {
         userSize.value = Map<String, String>.from(sizeDoc.data() ?? {});
       }
@@ -80,7 +75,6 @@ class HomeController extends GetxController {
           .orderBy('date', descending: true)
           .limit(5)
           .get();
-
       recentOrders.value = ordersQuery.docs.map((doc) => doc.data()).toList();
     } catch (e) {
       print('Error loading recent orders: $e');
@@ -97,9 +91,7 @@ class HomeController extends GetxController {
           .orderBy('date')
           .limit(3)
           .get();
-
-      upcomingSchedules.value =
-          schedulesQuery.docs.map((doc) => doc.data()).toList();
+      upcomingSchedules.value = schedulesQuery.docs.map((doc) => doc.data()).toList();
     } catch (e) {
       print('Error loading schedules: $e');
     }
@@ -117,7 +109,7 @@ class HomeController extends GetxController {
         // Get.toNamed('/orders');
         break;
       case 3: // Profile
-        // Get.toNamed('/profile');
+        Get.toNamed('/profile');
         break;
     }
   }
