@@ -197,49 +197,54 @@ class ProfileScreen extends GetView<ProfileController> {
               ),
             ),
           ),
-          bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: themeController
-                .currentTheme.bottomNavigationBarTheme.backgroundColor,
-            selectedItemColor: themeController
-                .currentTheme.bottomNavigationBarTheme.selectedItemColor,
-            unselectedItemColor: themeController
-                .currentTheme.bottomNavigationBarTheme.unselectedItemColor,
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home_outlined),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.search),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_bag_outlined),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person_outline),
-                label: '',
-              ),
-            ],
-            currentIndex: 3,
-            onTap: (index) {
-              switch (index) {
-                case 0:
-                  Get.offAllNamed('/home');
-                  break;
-                case 1:
-                  Get.offAllNamed('/search');
-                  break;
-                case 2:
-                  Get.offAllNamed('/cart');
-                  break;
-                case 3:
-                  // Already on profile
-                  break;
-              }
-            },
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: Offset(0, -5),
+                ),
+              ],
+            ),
+            child: BottomNavigationBar(
+              elevation: 0,
+              type: BottomNavigationBarType.fixed,
+              showSelectedLabels: true,
+              showUnselectedLabels: true,
+              selectedLabelStyle: TextStyle(fontSize: 12),
+              unselectedLabelStyle: TextStyle(fontSize: 12),
+              backgroundColor: themeController.isHalloweenTheme.value 
+                  ? ThemeController.halloweenCardBg 
+                  : Colors.white,
+              items: [
+                _buildNavBarItem(Icons.home_outlined, Icons.home, 'Home'),
+                _buildNavBarItem(Icons.search_outlined, Icons.search, 'Search'),
+                _buildNavBarItem(Icons.shopping_bag_outlined, Icons.shopping_bag, 'Orders'),
+                _buildNavBarItem(Icons.person_outline, Icons.person, 'Profile'),
+              ],
+              currentIndex: 3, // Profile tab is selected
+              selectedItemColor: themeController.isHalloweenTheme.value 
+                  ? ThemeController.halloweenPrimary 
+                  : Colors.blue[700],
+              unselectedItemColor: Colors.grey[600],
+              onTap: (index) {
+                switch (index) {
+                  case 0:
+                    Get.offAllNamed('/home');
+                    break;
+                  case 1:
+                    Get.offAllNamed('/search');
+                    break;
+                  case 2:
+                    Get.offAllNamed('/check');
+                    break;
+                  case 3:
+                    // Already on profile
+                    break;
+                }
+              },
+            ),
           ),
         ));
   }
@@ -326,6 +331,25 @@ class ProfileScreen extends GetView<ProfileController> {
       color: themeController.isHalloweenTheme.value
           ? Colors.grey[800]
           : Colors.grey[200],
+    );
+  }
+    BottomNavigationBarItem _buildNavBarItem(IconData icon, IconData activeIcon, String label) {
+    return BottomNavigationBarItem(
+      icon: Icon(
+        icon, 
+        size: 24,
+        color: themeController.isHalloweenTheme.value 
+            ? Colors.grey[600] 
+            : Colors.grey[600],
+      ),
+      activeIcon: Icon(
+        activeIcon, 
+        size: 24,
+        color: themeController.isHalloweenTheme.value 
+            ? ThemeController.halloweenPrimary 
+            : Colors.blue[700],
+      ),
+      label: label,
     );
   }
 }

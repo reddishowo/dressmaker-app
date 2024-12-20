@@ -101,22 +101,23 @@ class HomeController extends GetxController {
     selectedIndex.value = index;
     switch (index) {
       case 0: // Home
+        Get.offAllNamed('/home');
         break;
       case 1: // Search
         // Get.toNamed('/search');
         break;
       case 2: // Orders
-        // Get.toNamed('/orders');
+        Get.offAllNamed('/check');
         break;
       case 3: // Profile
-        Get.toNamed('/profile');
+        Get.offAllNamed('/profile');
         break;
     }
   }
 
   // Navigation methods
   void goToAllOrders() {
-    // Get.toNamed('/orders');
+    Get.toNamed('/check');
   }
 
   void goToOrder() {
@@ -124,18 +125,18 @@ class HomeController extends GetxController {
   }
 
   void goToAllSizes() {
-    // Get.toNamed('/sizes');
+    Get.toNamed('/sizes');
   }
 
   void goToSchedule() {
-    // Get.toNamed('/schedule');
+    Get.toNamed('/schedule');
   }
 
   void goToMeasurements() {
-    // Get.toNamed('/measurements');
+    Get.toNamed('/measurements');
   }
 
   void goToOrderDetails(String orderId) {
-    // Get.toNamed('/order-details/$orderId');
+    Get.toNamed('/order-details/$orderId');
   }
 }
