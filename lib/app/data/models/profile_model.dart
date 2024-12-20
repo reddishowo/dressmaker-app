@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// In profile_model.dart
 class ProfileModel {
   final String id;
   final String username;
   final String email;
   final String phone;
   final DateTime? createdAt;
+  final String role; // Add this field
 
   ProfileModel({
     required this.id,
@@ -13,9 +15,9 @@ class ProfileModel {
     required this.email,
     required this.phone,
     this.createdAt,
+    required this.role, // Add this parameter
   });
 
-  // Factory method to create a ProfileModel from Firestore data
   factory ProfileModel.fromMap(Map<String, dynamic> data, String documentId) {
     return ProfileModel(
       id: documentId,
@@ -25,10 +27,10 @@ class ProfileModel {
       createdAt: data['createdAt'] != null
           ? (data['createdAt'] as Timestamp).toDate()
           : null,
+      role: data['role'] ?? 'user', // Default to 'user' if not specified
     );
   }
 
-  // Convert ProfileModel to a map for storing in Firestore
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -36,6 +38,7 @@ class ProfileModel {
       'email': email,
       'phone': phone,
       'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : null,
+      'role': role,
     };
   }
 }

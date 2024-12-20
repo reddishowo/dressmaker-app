@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../models/profile_model.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
   final isFirstLaunch = false.obs;
@@ -32,6 +32,11 @@ class AuthController extends GetxController {
     ever(currentUser, handleInitialScreen);
     _setupAuthListener();
   }
+
+    bool isAdmin() {
+    return currentUser.value?.role == 'admin';
+  }
+
 
   // Setup auth listener to handle user state
   void _setupAuthListener() {
@@ -69,13 +74,15 @@ class AuthController extends GetxController {
   // Handle initial screen based on auth state
   void handleInitialScreen(ProfileModel? user) {
     if (isFirstLaunch.value) {
-      // If it's first launch, go to intro
       Get.offAllNamed('/intro');
     } else if (user != null) {
-      // If user is logged in and not first launch, go to home
-      Get.offAllNamed('/home');
+      // Redirect based on role
+      if (isAdmin()) {
+        Get.offAllNamed('/admin/dashboard');
+      } else {
+        Get.offAllNamed('/home');
+      }
     } else {
-      // If no user and not first launch, go to login
       Get.offAllNamed('/login');
     }
   }
@@ -95,9 +102,11 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
       
+      final email = loginEmailController.text.trim();
+      
       // Attempt to sign in
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: loginEmailController.text.trim(),
+        email: email,
         password: loginPasswordController.text.trim(),
       );
 
@@ -124,7 +133,12 @@ class AuthController extends GetxController {
           colorText: Colors.white,
         );
 
-        Get.offAllNamed('/home');
+        // Redirect based on role
+        if (isAdmin()) {
+          Get.offAllNamed('/admin/dashboard'); // Admin dashboard route
+        } else {
+          Get.offAllNamed('/home'); // Regular user home route
+        }
       }
     } catch (e) {
       Get.snackbar(
@@ -137,6 +151,7 @@ class AuthController extends GetxController {
       isLoading.value = false;
     }
   }
+
 
   // Method to handle registration
   Future<void> register() async {
@@ -156,20 +171,26 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
 
+      final email = emailController.text.trim();
+      
       // Create user in Firebase Auth
       final UserCredential userCredential = 
           await _auth.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
+        email: email,
         password: passwordController.text.trim(),
       );
+
+      // Determine role based on email domain
+      final String role = email.endsWith('@admin.com') ? 'admin' : 'user';
 
       // Create ProfileModel instance
       final profile = ProfileModel(
         id: userCredential.user!.uid,
         username: usernameController.text.trim(),
-        email: emailController.text.trim(),
+        email: email,
         phone: phoneController.text.trim(),
         createdAt: DateTime.now(),
+        role: role,
       );
 
       // Save user profile to Firestore
@@ -194,7 +215,12 @@ class AuthController extends GetxController {
         colorText: Colors.white,
       );
 
-      Get.offAllNamed('/home');
+      // Redirect based on role
+      if (role == 'admin') {
+        Get.offAllNamed('/admin/dashboard');
+      } else {
+        Get.offAllNamed('/home');
+      }
     } catch (e) {
       Get.snackbar(
         "Error",

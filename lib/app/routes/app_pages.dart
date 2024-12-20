@@ -1,3 +1,6 @@
+import 'package:clothing_store/app/middlewares/auth_middleware.dart';
+import 'package:clothing_store/app/modules/admin/bindings/admin_dashboard_binding.dart';
+import 'package:clothing_store/app/modules/admin/views/admin_dashboard_view.dart';
 import 'package:clothing_store/app/modules/order/bindings/order_binding.dart';
 import 'package:clothing_store/app/modules/order/views/order_view.dart';
 import 'package:clothing_store/app/modules/profiles/bindings/profile_binding.dart';
@@ -53,6 +56,15 @@ class AppPages {
       name: _Paths.PROFILE,
       page: () => ProfileScreen(),
       binding: ProfileBinding(),
+    ),
+        GetPage(
+      name: '/admin/dashboard',
+      page: () => const AdminDashboardView(),
+      binding: AdminDashboardBinding(),
+      middlewares: [
+        // You might want to add a middleware to check if user is admin
+        AuthMiddleware(),
+      ],
     ),
   ];
 }
