@@ -72,7 +72,7 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
             GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 3,
+              crossAxisCount: 2,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
               children: [
@@ -87,12 +87,6 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
                   '${controller.totalOrders}',
                   Icons.shopping_bag,
                   Colors.green,
-                ),
-                _buildStatCard(
-                  'Revenue',
-                  '\$${controller.totalRevenue.toStringAsFixed(2)}',
-                  Icons.attach_money,
-                  Colors.orange,
                 ),
               ],
             ),
