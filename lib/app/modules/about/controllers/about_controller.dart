@@ -10,18 +10,33 @@ class AboutController extends GetxController {
   • Melihat katalog design terbaru
   • Melacak status pesanan
   • Menyimpan ukuran badan Anda
-  '''.obs;
+  '''
+      .obs;
 
   final RxList<Map<String, String>> developers = [
     {
-      'name': 'John Doe',
-      'role': 'Lead Developer',
-      'email': 'john@example.com'
+      'name': 'Farriel Arrianta', 
+      'role': 'Lead Developer', 
+      'email': 'farrielarrianta@webmail.umm.ac.id'},
+    {
+      'name': 'Muhammad Eka Nur A.',
+      'role': 'UI/UX Designer',
+      'email': 'kknurarief@webmail.umm.ac.id'
     },
     {
-      'name': 'Jane Smith',
+      'name': 'Ahmad Naufal Lutfan M.',
       'role': 'UI/UX Designer',
-      'email': 'jane@example.com'
+      'email': 'ahmadnaufal@webmail.umm.ac.id'
+    },
+    {
+      'name': 'Nizam Avif Anhari',
+      'role': 'UI/UX Designer',
+      'email': 'nizamanhari@webmail.umm.ac.id'
+    },
+    {
+      'name': 'Andi Fathir',
+      'role': 'UI/UX Designer',
+      'email': 'andifathirr@webmail.umm.ac.id'
     },
   ].obs;
 

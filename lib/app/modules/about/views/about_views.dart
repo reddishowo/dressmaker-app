@@ -78,7 +78,7 @@ class AboutView extends GetView<AboutController> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -92,7 +92,7 @@ class AboutView extends GetView<AboutController> {
                                   : Colors.black,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 8, width: 10),
                           Obx(() => Text(
                                 controller.appDescription.value,
                                 style: TextStyle(
