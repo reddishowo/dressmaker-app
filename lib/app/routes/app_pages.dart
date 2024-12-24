@@ -1,6 +1,8 @@
 import 'package:clothing_store/app/middlewares/auth_middleware.dart';
 import 'package:clothing_store/app/modules/about/bindings/about_bindings.dart';
 import 'package:clothing_store/app/modules/about/views/about_views.dart';
+import 'package:clothing_store/app/modules/account/bindings/account_bindings.dart';
+import 'package:clothing_store/app/modules/account/views/account_views.dart';
 import 'package:clothing_store/app/modules/admin/bindings/admin_dashboard_binding.dart';
 import 'package:clothing_store/app/modules/admin/views/admin_dashboard_view.dart';
 import 'package:clothing_store/app/modules/check/bindings/check_order_binding.dart';
@@ -81,6 +83,11 @@ class AppPages {
       name: _Paths.ABOUT,
       page: () => AboutView(),
       binding: AboutBinding()
+    ),
+    GetPage(
+      name: _Paths.ACCOUNT,
+      page: () => AccountSettingsView(),
+      binding: AccountSettingsBinding()
     ),
   ];
 }
