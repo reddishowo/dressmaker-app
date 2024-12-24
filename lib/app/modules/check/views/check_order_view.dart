@@ -93,7 +93,7 @@ class CheckOrderView extends GetView<CheckOrderController> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => Get.toNamed('/order'),
+          onPressed: () => Get.toNamed('/jahitbaju'),
           backgroundColor: isHalloween ? ThemeController.halloweenPrimary : colorScheme.primary,
           child: Icon(
             Icons.add,

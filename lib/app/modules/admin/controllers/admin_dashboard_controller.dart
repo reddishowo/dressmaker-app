@@ -1,6 +1,8 @@
+import 'package:clothing_store/app/data/models/measurement_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import '../../../data/services/authentication_controller.dart';
 
 class AdminDashboardController extends GetxController {
@@ -12,8 +14,10 @@ class AdminDashboardController extends GetxController {
   final RxDouble totalRevenue = 0.0.obs;
   final RxBool isLoading = false.obs;
   final RxList<Map<String, dynamic>> recentUsers = <Map<String, dynamic>>[].obs;
-  final RxList<Map<String, dynamic>> recentOrders = <Map<String, dynamic>>[].obs;
-  final RxMap<String, List<Map<String, dynamic>>> userOrders = <String, List<Map<String, dynamic>>>{}.obs;
+  final RxList<Map<String, dynamic>> recentOrders =
+      <Map<String, dynamic>>[].obs;
+  final RxMap<String, List<Map<String, dynamic>>> userOrders =
+      <String, List<Map<String, dynamic>>>{}.obs;
 
   @override
   void onInit() {
@@ -23,6 +27,172 @@ class AdminDashboardController extends GetxController {
       return;
     }
     loadDashboardData();
+  }
+
+  Future<MeasurementModel?> getUserMeasurement(String userId) async {
+    try {
+      final measurementDoc = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('measurements')
+          .orderBy('lastUpdated', descending: true)
+          .limit(1)
+          .get();
+
+      if (measurementDoc.docs.isEmpty) {
+        print('No measurements found for user: $userId');
+        return null;
+      }
+
+      final data = measurementDoc.docs.first.data();
+      if (data.isEmpty) {
+        print('Empty measurement data for user: $userId');
+        return null;
+      }
+
+      return MeasurementModel.fromMap(
+        data,
+        measurementDoc.docs.first.id,
+      );
+    } catch (e) {
+      print('Error fetching measurement: $e');
+      return null;
+    }
+  }
+
+  void showMeasurementDialog(String userId, String username) async {
+    try {
+      Get.dialog(
+        const Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+              SizedBox(height: 16),
+            ],
+          ),
+        ),
+        barrierDismissible: false,
+      );
+
+      final measurement = await getUserMeasurement(userId);
+      Get.back(); // Close loading dialog
+
+      if (measurement != null) {
+        Get.dialog(
+          AlertDialog(
+            title: Row(
+              children: [
+                const Icon(Icons.straighten, color: Colors.blue),
+                const SizedBox(width: 8),
+                Text('$username\'s Measurements'),
+              ],
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildMeasurementRow(
+                      'Shoulder Width', measurement.shoulderWidth),
+                  _buildMeasurementRow('Chest', measurement.chest),
+                  _buildMeasurementRow('Waist', measurement.waist),
+                  _buildMeasurementRow('Hip', measurement.hip),
+                  _buildMeasurementRow(
+                      'Sleeve Length', measurement.sleeveLength),
+                  _buildMeasurementRow(
+                      'Arm Circumference', measurement.armCircumference),
+                  _buildMeasurementRow('Body Length', measurement.bodyLength),
+                  _buildMeasurementRow(
+                      'Neck Circumference', measurement.neckCircumference),
+                  const Divider(),
+                  Row(
+                    children: [
+                      const Icon(Icons.update, size: 16, color: Colors.grey),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Last Updated: ${DateFormat('MMM d, y').format(measurement.lastUpdated)}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton.icon(
+                icon: const Icon(Icons.close),
+                label: const Text('Close'),
+                onPressed: () => Get.back(),
+              ),
+            ],
+          ),
+        );
+      } else {
+        Get.snackbar(
+          'No Measurements',
+          'No measurement data available for $username',
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+          icon: const Icon(Icons.warning, color: Colors.white),
+        );
+      }
+    } catch (e) {
+      print('Error in showMeasurementDialog: $e');
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+      Get.snackbar(
+        'Error',
+        'Failed to load measurements: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+        icon: const Icon(Icons.error, color: Colors.white),
+      );
+    }
+  }
+
+  Widget _buildMeasurementRow(String label, double value) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.blue.shade50,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              '${value.toStringAsFixed(1)} cm',
+              style: TextStyle(
+                color: Colors.blue.shade700,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> loadDashboardData() async {
@@ -55,7 +225,7 @@ class AdminDashboardController extends GetxController {
         .orderBy('createdAt', descending: true)
         .limit(5)
         .get();
-    
+
     recentUsers.value = recentUsersSnapshot.docs
         .map((doc) => {
               'id': doc.id,
@@ -78,7 +248,7 @@ class AdminDashboardController extends GetxController {
     for (var userDoc in usersSnapshot.docs) {
       final userId = userDoc.id;
       final userData = userDoc.data();
-      
+
       // Fetch orders for this user
       final userOrdersSnapshot = await _firestore
           .collection('users')
@@ -101,7 +271,7 @@ class AdminDashboardController extends GetxController {
 
         userOrders[userId] = ordersList;
         totalOrders.value += ordersList.length;
-        
+
         // Update total revenue if you have a price field in your orders
         // Assuming each order has a 'total' field
         for (var order in ordersList) {
@@ -111,11 +281,9 @@ class AdminDashboardController extends GetxController {
     }
 
     // Update recent orders list with the most recent orders across all users
-    final allOrders = userOrders.values
-        .expand((orders) => orders)
-        .toList()
+    final allOrders = userOrders.values.expand((orders) => orders).toList()
       ..sort((a, b) => b['date'].compareTo(a['date']));
-    
+
     recentOrders.value = allOrders.take(5).toList();
   }
 
@@ -123,14 +291,14 @@ class AdminDashboardController extends GetxController {
     await loadDashboardData();
   }
 
-
   Future<void> deleteOrder(String userId, String orderId) async {
     try {
       // Show confirmation dialog
       final bool confirm = await Get.dialog(
         AlertDialog(
           title: const Text('Confirm Delete'),
-          content: const Text('Are you sure you want to delete this order? This action cannot be undone.'),
+          content: const Text(
+              'Are you sure you want to delete this order? This action cannot be undone.'),
           actions: [
             TextButton(
               onPressed: () => Get.back(result: false),
@@ -166,15 +334,15 @@ class AdminDashboardController extends GetxController {
       // Remove the order from local state
       if (userOrders.containsKey(userId)) {
         userOrders[userId]?.removeWhere((order) => order['id'] == orderId);
-        
+
         // If this user has no more orders, remove them from userOrders
         if (userOrders[userId]?.isEmpty ?? true) {
           userOrders.remove(userId);
         }
-        
+
         // Update total orders count
         totalOrders.value--;
-        
+
         // Update total revenue
         final deletedOrder = userOrders[userId]?.firstWhere(
           (order) => order['id'] == orderId,

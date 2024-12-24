@@ -3,6 +3,8 @@ import 'package:clothing_store/app/modules/admin/bindings/admin_dashboard_bindin
 import 'package:clothing_store/app/modules/admin/views/admin_dashboard_view.dart';
 import 'package:clothing_store/app/modules/check/bindings/check_order_binding.dart';
 import 'package:clothing_store/app/modules/check/views/check_order_view.dart';
+import 'package:clothing_store/app/modules/measurement/bindings/measurement_binding.dart';
+import 'package:clothing_store/app/modules/measurement/views/measurement_view.dart';
 import 'package:clothing_store/app/modules/order/bindings/order_binding.dart';
 import 'package:clothing_store/app/modules/order/views/order_view.dart';
 import 'package:clothing_store/app/modules/profiles/bindings/profile_binding.dart';
@@ -67,6 +69,11 @@ class AppPages {
       name: _Paths.CHECK,
       page: () => CheckOrderView(),
       binding: CheckOrderBinding(),
+    ),
+    GetPage(
+      name: _Paths.MEASUREMENTS,
+      page: () => MeasurementView(),
+      binding: MeasurementBinding()
     ),
   ];
 }

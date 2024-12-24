@@ -131,7 +131,7 @@ class ProfileScreen extends GetView<ProfileController> {
                           subtitle: 'Atur ukuran badan anda',
                           onTap: () {
                             // Navigate to size settings
-                            Get.toNamed('/size-settings');
+                            Get.toNamed('/measurements');
                           },
                         ),
                         _buildDivider(),
@@ -155,13 +155,6 @@ class ProfileScreen extends GetView<ProfileController> {
                             onChanged: (value) => themeController.toggleTheme(),
                             activeColor: ThemeController.halloweenPrimary,
                           ),
-                        ),
-                        _buildDivider(),
-                        _buildMenuItem(
-                          icon: Icons.person_outline,
-                          title: 'Akun Anda',
-                          subtitle: 'Buat perubahan pada akun anda',
-                          onTap: () => Get.toNamed('/account-settings'),
                         ),
                         _buildDivider(),
                         _buildMenuItem(

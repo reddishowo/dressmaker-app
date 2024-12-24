@@ -323,7 +323,6 @@ class HomeView extends GetView<HomeController> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildMenuIcon(Icons.cut_outlined, "Jahit Baju", controller.goToOrder),
-          _buildMenuIcon(Icons.calendar_today_outlined, "Jadwal", controller.goToSchedule),
           _buildMenuIcon(Icons.straighten_outlined, "Ukuran", controller.goToMeasurements),
           _buildMenuIcon(Icons.shopping_bag_outlined, "Pesanan", controller.goToAllOrders),
         ],
@@ -380,17 +379,17 @@ class HomeView extends GetView<HomeController> {
     return _buildSection(
       title: "Ukuran Saya",
       trailing: "Lihat Semua Ukuran →",
-      onTap: controller.goToAllSizes,
+      onTap: controller.showAllSizesModal,  // Changed from goToAllSizes to showAllSizesModal
       child: Container(
         margin: EdgeInsets.only(top: 12),
         child: Obx(() => Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildSizeBox("Lingkar Dada", controller.userSize.value['Lingkar Dada'] ?? '-'),
-                _buildSizeBox("Lingkar Pinggang", controller.userSize.value['Lingkar Pinggang'] ?? '-'),
-                _buildSizeBox("Lingkar Pinggul", controller.userSize.value['Lingkar Pinggul'] ?? '-'),
-              ],
-            )),
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildSizeBox("Lingkar Dada", controller.userSize.value['Lingkar Dada'] ?? '-'),
+            _buildSizeBox("Lingkar Pinggang", controller.userSize.value['Lingkar Pinggang'] ?? '-'),
+            _buildSizeBox("Lingkar Pinggul", controller.userSize.value['Lingkar Pinggul'] ?? '-'),
+          ],
+        )),
       ),
     );
   }
