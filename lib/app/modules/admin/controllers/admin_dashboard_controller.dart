@@ -31,31 +31,26 @@ class AdminDashboardController extends GetxController {
 
   Future<MeasurementModel?> getUserMeasurement(String userId) async {
     try {
-      final measurementDoc = await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('measurements')
-          .orderBy('lastUpdated', descending: true)
-          .limit(1)
-          .get();
+      print('Fetching measurements for userId: $userId');
 
-      if (measurementDoc.docs.isEmpty) {
-        print('No measurements found for user: $userId');
+      final sizeDoc =
+          await _firestore.collection('measurements').doc(userId).get();
+
+      if (!sizeDoc.exists) {
+        print('No measurements found for userId: $userId');
         return null;
       }
 
-      final data = measurementDoc.docs.first.data();
-      if (data.isEmpty) {
-        print('Empty measurement data for user: $userId');
+      final data = sizeDoc.data();
+      if (data == null || data.isEmpty) {
+        print('Measurement data is empty for userId: $userId');
         return null;
       }
+      print('Measurement data retrieved: $data');
 
-      return MeasurementModel.fromMap(
-        data,
-        measurementDoc.docs.first.id,
-      );
+      return MeasurementModel.fromMap(data, sizeDoc.id);
     } catch (e) {
-      print('Error fetching measurement: $e');
+      print('Error fetching measurement for userId: $userId. Error: $e');
       return null;
     }
   }
