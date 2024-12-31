@@ -6,7 +6,13 @@ abstract class Routes {
   static const HOME = _Paths.HOME;
   static const INTRO = _Paths.INTRO;
   static const REGISTER = _Paths.REGISTER;
+  static const LOGIN = _Paths.LOGIN;
   static const JAHITBAJU = _Paths.JAHITBAJU;
+  static const PROFILE = _Paths.PROFILE;
+  static const CHECK = _Paths.CHECK;
+  static const MEASUREMENT = _Paths.MEASUREMENTS;
+  static const ABOUT = _Paths.ABOUT;
+  static const ACCOUNT = _Paths.ACCOUNT;
 }
 
 abstract class _Paths {
@@ -15,4 +21,10 @@ abstract class _Paths {
   static const INTRO = '/intro';
   static const REGISTER = '/register';
   static const JAHITBAJU = '/jahitbaju';
+  static const LOGIN = '/login';
+  static const PROFILE = '/profile';
+  static const CHECK = '/check';
+  static const MEASUREMENTS = '/measurements';
+  static const ABOUT = '/about';
+  static const ACCOUNT = '/account-settings';
 }

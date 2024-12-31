@@ -6,141 +6,216 @@ class RegisterView extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: 80),
-            // Title and Subtitle
-            Text(
-              'Lorem Ipsum',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Your style, your statement. Find the perfect fit today',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
-              ),
-            ),
-            SizedBox(height: 30),
-            // Logo
-            Image.asset(
-              'assets/logo.png', // Ensure this image exists in your assets
-              height: 200,
-            ),
-            SizedBox(height: 5),
-            // Form Fields
-            TextField(
-              controller: controller.usernameController,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.person),
-                hintText: 'Username',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 15),
-            TextField(
-              controller: controller.emailController,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.email),
-                hintText: 'Email',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 15),
-            TextField(
-              controller: controller.passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.lock),
-                hintText: 'Password',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 15),
-            TextField(
-              controller: controller.phoneController,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.phone),
-                hintText: 'Phone Number',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 30),
-            // Register Button
-            ElevatedButton(
-              onPressed: () {
-                controller.register();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 70),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 60),
+              Text(
+                'Lorem Ipsum',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Techno',
+                  letterSpacing: 1.2,
                 ),
               ),
-              child: Text(
-                'Register',
-                style: TextStyle(color: Colors.white),
+              const SizedBox(height: 8),
+              Text(
+                'Your style, your statement. Find the perfect fit today',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black54,
+                  height: 1.4,
+                ),
               ),
-            ),
-            SizedBox(height: 20),
-            // Social Media Options
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(child: Divider(thickness: 1)),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text("atau"),
+              const SizedBox(height: 10),
+              Center(
+                child: Image.asset(
+                  'assets/logo.png',
+                  height: 220,
+                  width: 220,
                 ),
-                Expanded(child: Divider(thickness: 1)),
-              ],
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: Image.asset(
-                      'assets/google.png'), // Replace with actual Google logo
-                  iconSize: 40,
-                  onPressed: () {
-                    controller.signInWithGoogle();
-                  },
+              ),
+              _buildTextField(
+                controller: controller.usernameController,
+                icon: Icons.person_outline,
+                hint: 'Username',
+              ),
+              const SizedBox(height: 16),
+              _buildTextField(
+                controller: controller.emailController,
+                icon: Icons.mail_outline,
+                hint: 'Email',
+              ),
+              const SizedBox(height: 16),
+              _buildTextField(
+                controller: controller.passwordController,
+                icon: Icons.lock_outline,
+                hint: 'Password',
+                isPassword: true,
+              ),
+              const SizedBox(height: 16),
+              _buildTextField(
+                controller: controller.phoneController,
+                icon: Icons.phone_outlined,
+                hint: 'Phone Number',
+              ),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: controller.register,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  elevation: 0,
                 ),
-                SizedBox(width: 20),
-                IconButton(
-                  icon: Image.asset(
-                      'assets/facebook.png'), // Replace with actual Facebook logo
-                  iconSize: 40,
-                  onPressed: () {
-                    controller.signInWithFacebook();
-                  },
+                child: const Text(
+                  'Register',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                SizedBox(width: 20),
-                IconButton(
-                  icon: Image.asset(
-                      'assets/apple.png'), // Replace with actual Apple logo
-                  iconSize: 40,
-                  onPressed: () {
-                    controller.signInWithApple();
-                  },
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: GestureDetector(
+                  onTap: () => Get.toNamed('/login'),
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'Sudah punya akun? ',
+                      style: TextStyle(color: Colors.grey[600]),
+                      children: const [
+                        TextSpan(
+                          text: 'Login',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ],
-            ),
-            SizedBox(height: 20,)
-          ],
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: Divider(
+                      color: Colors.grey[300],
+                      thickness: 1,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'atau',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      color: Colors.grey[300],
+                      thickness: 1,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildSocialButton(
+                    'assets/google.png',
+                    controller.signInWithGoogle,
+                  ),
+                  const SizedBox(width: 24),
+                  _buildSocialButton(
+                    'assets/facebook.png',
+                    controller.signInWithFacebook,
+                  ),
+                  const SizedBox(width: 24),
+                  _buildSocialButton(
+                    'assets/apple.png',
+                    controller.signInWithApple,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+            ],
+          ),
         ),
       ),
-    ));
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required IconData icon,
+    required String hint,
+    bool isPassword = false,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: isPassword,
+      style: const TextStyle(fontSize: 14),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: TextStyle(
+          color: Colors.grey[400],
+          fontSize: 14,
+        ),
+        prefixIcon: Icon(
+          icon,
+          color: Colors.grey[400],
+          size: 20,
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 16),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.black),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSocialButton(String assetPath, VoidCallback onPressed) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey[300]!),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Image.asset(
+          assetPath,
+          height: 24,
+          width: 24,
+        ),
+      ),
+    );
   }
 }
