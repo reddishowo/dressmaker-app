@@ -1,4 +1,3 @@
-import 'package:clothing_store/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,7 +8,6 @@ class CheckOrderView extends GetView<CheckOrderController> {
   @override
   Widget build(BuildContext context) {
     final ThemeController themeController = Get.find<ThemeController>();
-    final HomeController homeController = Get.find<HomeController>();
 
     return Obx(() {
       final isHalloween = themeController.isHalloweenTheme.value;
