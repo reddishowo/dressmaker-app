@@ -82,7 +82,7 @@ class AdminDashboardController extends GetxController {
               children: [
                 const Icon(Icons.straighten, color: Colors.blue),
                 const SizedBox(width: 8),
-                Text('$username\'s Measurements'),
+                Text('$username\'s'),
               ],
             ),
             content: SingleChildScrollView(
