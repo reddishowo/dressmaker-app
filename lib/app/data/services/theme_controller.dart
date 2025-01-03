@@ -16,6 +16,45 @@ class ThemeController extends GetxController {
   static const regularBackground = Color(0xFFF5F5F5);
   static const regularCardBg = Colors.white;
   
+  @override
+  void onInit() {
+    super.onInit();
+    // Check theme on initialization
+    _checkThemeDate();
+    // Set up timer to check date every day at midnight
+    _setupDailyThemeCheck();
+  }
+
+  void _setupDailyThemeCheck() {
+    // Get time until next midnight
+    final now = DateTime.now();
+    final nextMidnight = DateTime(now.year, now.month, now.day + 1);
+    final timeUntilMidnight = nextMidnight.difference(now);
+
+    // Schedule first check
+    Future.delayed(timeUntilMidnight, () {
+      _checkThemeDate();
+      // Then setup daily checks
+      const oneDay = Duration(days: 1);
+      Stream.periodic(oneDay, (x) => x).listen((_) => _checkThemeDate());
+    });
+  }
+
+  void _checkThemeDate() {
+    final now = DateTime.now();
+    
+    // Check if current date is within Halloween theme period (Oct 28 - Oct 31)
+    bool shouldBeHalloweenTheme = false;
+    
+    if (now.month == 12 && now.day >= 28 && now.day <= 31) {
+      shouldBeHalloweenTheme = true;
+    }
+    
+    if (shouldBeHalloweenTheme != isHalloweenTheme.value) {
+      toggleTheme();
+    }
+  }
+  
   ThemeData get currentTheme => isHalloweenTheme.value ? halloweenTheme : regularTheme;
   
   final ThemeData halloweenTheme = ThemeData(

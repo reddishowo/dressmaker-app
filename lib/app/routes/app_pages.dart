@@ -13,6 +13,8 @@ import 'package:clothing_store/app/modules/order/bindings/order_binding.dart';
 import 'package:clothing_store/app/modules/order/views/order_view.dart';
 import 'package:clothing_store/app/modules/profiles/bindings/profile_binding.dart';
 import 'package:clothing_store/app/modules/profiles/views/profile_view.dart';
+import 'package:clothing_store/app/modules/search/bindings/search_binding.dart'; // Import SearchBinding
+import 'package:clothing_store/app/modules/search/views/search_view.dart'; // Import SearchView
 import 'package:get/get.dart';
 
 import '../modules/home/bindings/home_binding.dart';
@@ -77,17 +79,23 @@ class AppPages {
     GetPage(
       name: _Paths.MEASUREMENTS,
       page: () => MeasurementView(),
-      binding: MeasurementBinding()
+      binding: MeasurementBinding(),
     ),
     GetPage(
       name: _Paths.ABOUT,
       page: () => AboutView(),
-      binding: AboutBinding()
+      binding: AboutBinding(),
     ),
     GetPage(
       name: _Paths.ACCOUNT,
       page: () => AccountSettingsView(),
-      binding: AccountSettingsBinding()
+      binding: AccountSettingsBinding(),
+    ),
+    // Route baru untuk SearchView
+    GetPage(
+      name: _Paths.SEARCH,
+      page: () => SearchView(),
+      binding: SearchBinding(),
     ),
   ];
 }

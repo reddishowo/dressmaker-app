@@ -126,7 +126,7 @@ class HomeController extends GetxController {
         Get.offAllNamed('/home');
         break;
       case 1: // Search
-        // Get.toNamed('/search');
+         Get.toNamed('/search');
         break;
       case 2: // Orders
         Get.offAllNamed('/check');
