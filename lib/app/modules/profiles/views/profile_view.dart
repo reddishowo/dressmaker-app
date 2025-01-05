@@ -136,6 +136,15 @@ class ProfileScreen extends GetView<ProfileController> {
                         ),
                         _buildDivider(),
                         _buildMenuItem(
+                          icon: Icons.message,
+                          title: 'Feedback',
+                          subtitle: 'Berikan Saran dan Kritik',
+                          onTap: () {
+                            Get.toNamed('/feedback');
+                          },
+                        ),
+                        _buildDivider(),
+                        _buildMenuItem(
                           icon: Icons.info_outline,
                           title: 'Tentang Aplikasi',
                           subtitle: 'Versi 1.0.0',

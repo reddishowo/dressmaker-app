@@ -7,6 +7,8 @@ import 'package:clothing_store/app/modules/admin/bindings/admin_dashboard_bindin
 import 'package:clothing_store/app/modules/admin/views/admin_dashboard_view.dart';
 import 'package:clothing_store/app/modules/check/bindings/check_order_binding.dart';
 import 'package:clothing_store/app/modules/check/views/check_order_view.dart';
+import 'package:clothing_store/app/modules/feedback/bindings/feedback_binding.dart';
+import 'package:clothing_store/app/modules/feedback/views/feedback_view.dart';
 import 'package:clothing_store/app/modules/measurement/bindings/measurement_binding.dart';
 import 'package:clothing_store/app/modules/measurement/views/measurement_view.dart';
 import 'package:clothing_store/app/modules/order/bindings/order_binding.dart';
@@ -96,6 +98,11 @@ class AppPages {
       name: _Paths.SEARCH,
       page: () => SearchView(),
       binding: SearchBinding(),
+    ),
+    GetPage(
+      name: _Paths.FEEDBACK,
+      page: () => FeedbackView(),
+      binding: FeedbackBinding(),
     ),
   ];
 }

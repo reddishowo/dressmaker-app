@@ -7,7 +7,7 @@ import '../../../data/services/authentication_controller.dart';
 class AdminDashboardView extends GetView<AdminDashboardController> {
   const AdminDashboardView({Key? key}) : super(key: key);
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -23,26 +23,36 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
           ),
         ],
       ),
-      body: Obx(
-        () => controller.isLoading.value
-            ? const Center(child: CircularProgressIndicator())
-            : RefreshIndicator(
-                onRefresh: controller.refreshData,
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildStatisticsSection(),
-                      const SizedBox(height: 24),
-                      _buildRecentUsersSection(),
-                      const SizedBox(height: 24),
-                      _buildAllUsersOrdersSection(),
+      // Wrap the entire body in a SafeArea widget
+      body: SafeArea(
+        child: Obx(
+          () => controller.isLoading.value
+              ? const Center(child: CircularProgressIndicator())
+              : RefreshIndicator(
+                  onRefresh: controller.refreshData,
+                  child: CustomScrollView(
+                    // Use CustomScrollView with SliverList for better performance
+                    slivers: [
+                      SliverPadding(
+                        padding: const EdgeInsets.all(16),
+                        sliver: SliverList(
+                          delegate: SliverChildListDelegate([
+                            _buildStatisticsSection(),
+                            const SizedBox(height: 24),
+                            _buildRecentFeedbackSection(),
+                            const SizedBox(height: 24),
+                            _buildRecentUsersSection(),
+                            const SizedBox(height: 24),
+                            _buildAllUsersOrdersSection(),
+                            // Add bottom padding to prevent overflow
+                            const SizedBox(height: 32),
+                          ]),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ),
+        ),
       ),
     );
   }
@@ -69,71 +79,152 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
               ],
             ),
             const SizedBox(height: 16),
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
+            // Ganti GridView dengan Row untuk layout yang lebih fleksibel
+            Row(
               children: [
-                _buildStatCard(
-                  'Total Users',
-                  '${controller.totalUsers}',
-                  Icons.people,
-                  Colors.blue,
+                Expanded(
+                  child: _buildStatCard(
+                    'Total Users',
+                    '${controller.totalUsers}',
+                    Icons.people,
+                    Colors.blue,
+                  ),
                 ),
-                _buildStatCard(
-                  'Total Orders',
-                  '${controller.totalOrders}',
-                  Icons.shopping_bag,
-                  Colors.green,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _buildStatCard(
+                    'Total Orders',
+                    '${controller.totalOrders}',
+                    Icons.shopping_bag,
+                    Colors.green,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _buildStatCard(
+                    'Feedback',
+                    '${controller.recentFeedback.length}',
+                    Icons.feedback,
+                    Colors.orange,
+                  ),
                 ),
               ],
             ),
           ],
         ),
       ),
-    );
+    );  
   }
 
-  Widget _buildStatCard(
-      String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
     return Container(
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withOpacity(0),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color.withOpacity(0.2)),
       ),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),  // Kurangi padding horizontal
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 32, color: color),
-          const SizedBox(height: 12),
+          Icon(icon, size: 24),  // Kurangi ukuran icon
+          const SizedBox(height: 8),  // Kurangi spacing
           Text(
             title,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 12,  // Kurangi ukuran font
               color: color.withOpacity(0.8),
               fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 8),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: color.withOpacity(0.9),
-              ),
-              textAlign: TextAlign.center,
+          const SizedBox(height: 4),  // Kurangi spacing
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 20,  // Kurangi ukuran font
+              fontWeight: FontWeight.bold,
+              color: color.withOpacity(0.9),
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildRecentFeedbackSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Recent Feedback',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            TextButton.icon(
+              onPressed: controller.showFeedbackListDialog,
+              icon: const Icon(Icons.list),
+              label: const Text('View All'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Card(
+          child: Obx(() {
+            if (controller.recentFeedback.isEmpty) {
+              return const Padding(
+                padding: EdgeInsets.all(16),
+                child: Center(
+                  child: Text('No feedback available'),
+                ),
+              );
+            }
+
+            return ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemCount: 3, // Show only 3 most recent feedback
+              separatorBuilder: (context, index) => const Divider(),
+              itemBuilder: (context, index) {
+                if (index >= controller.recentFeedback.length) {
+                  return const SizedBox.shrink();
+                }
+                
+                final feedback = controller.recentFeedback[index];
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: feedback.adminResponse != null ? Colors.green : Colors.orange,
+                    child: Icon(
+                      feedback.adminResponse != null ? Icons.check : Icons.pending,
+                      color: Colors.white,
+                    ),
+                  ),
+                  title: Text(
+                    feedback.text,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Text(
+                    '${DateFormat('MMM d, y').format(feedback.createdAt)}\nFrom: ${feedback.userId}',
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onPressed: () => controller.showFeedbackDetailDialog(feedback),
+                  ),
+                  onTap: () => controller.showFeedbackDetailDialog(feedback),
+                );
+              },
+            );
+          }),
+        ),
+      ],
     );
   }
 
@@ -164,6 +255,7 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
           child: ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
             itemCount: controller.recentUsers.length,
             itemBuilder: (context, index) {
               final user = controller.recentUsers[index];
@@ -308,6 +400,7 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
                   itemCount: orders.length,
                   itemBuilder: (context, index) {
                     final order = orders[index];
@@ -325,27 +418,26 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
                       direction: DismissDirection.endToStart,
                       confirmDismiss: (direction) async {
                         return await Get.dialog<bool>(
-                              AlertDialog(
-                                title: const Text('Confirm Delete'),
-                                content: const Text(
-                                  'Are you sure you want to delete this order? This action cannot be undone.',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Get.back(result: false),
-                                    child: const Text('Cancel'),
-                                  ),
-                                  TextButton(
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: Colors.red,
-                                    ),
-                                    onPressed: () => Get.back(result: true),
-                                    child: const Text('Delete'),
-                                  ),
-                                ],
+                          AlertDialog(
+                            title: const Text('Confirm Delete'),
+                            content: const Text(
+                              'Are you sure you want to delete this order? This action cannot be undone.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Get.back(result: false),
+                                child: const Text('Cancel'),
                               ),
-                            ) ??
-                            false;
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.red,
+                                ),
+                                onPressed: () => Get.back(result: true),
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          ),
+                        ) ?? false;
                       },
                       onDismissed: (direction) {
                         controller.deleteOrder(userId, order['id']);
@@ -384,8 +476,7 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
                                 ),
                               ],
                             ),
-                            if (order['notes'] != null &&
-                                order['notes'].isNotEmpty)
+                            if (order['notes'] != null && order['notes'].isNotEmpty)
                               Padding(
                                 padding: const EdgeInsets.only(top: 4),
                                 child: Text(
@@ -405,8 +496,7 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
                           children: [
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
+                              crossAxisAlignment: CrossAxisAlignment.end,children: [
                                 if (order['total'] != null)
                                   Text(
                                     '\$${order['total'].toStringAsFixed(2)}',
@@ -427,8 +517,7 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () =>
-                                  controller.deleteOrder(userId, order['id']),
+                              onPressed: () => controller.deleteOrder(userId, order['id']),
                             ),
                           ],
                         ),
@@ -483,7 +572,7 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
           color: textColor,
           fontWeight: FontWeight.w500,
         ),
-      ),
+      ),  
     );
   }
 }
