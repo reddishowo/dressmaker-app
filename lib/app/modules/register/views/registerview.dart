@@ -15,7 +15,7 @@ class RegisterView extends GetView<AuthController> {
             children: [
               const SizedBox(height: 60),
               Text(
-                'Lorem Ipsum',
+                'Dressmaker',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 36,
