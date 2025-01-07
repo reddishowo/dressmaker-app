@@ -23,7 +23,7 @@ class MeasurementView extends GetView<MeasurementController> {
                       blurRadius: 8,
                       offset: Offset(0, 2),
                     )
-                  ]
+                  ] 
                 : [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.05),

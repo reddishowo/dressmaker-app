@@ -1,4 +1,3 @@
-import 'package:clothing_store/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,7 +8,6 @@ class CheckOrderView extends GetView<CheckOrderController> {
   @override
   Widget build(BuildContext context) {
     final ThemeController themeController = Get.find<ThemeController>();
-    final HomeController homeController = Get.find<HomeController>();
 
     return Obx(() {
       final isHalloween = themeController.isHalloweenTheme.value;
@@ -66,32 +64,7 @@ class CheckOrderView extends GetView<CheckOrderController> {
             ],
           ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: 2, // Set to 2 since this is the Orders tab
-          onTap: homeController.onNavBarTapped,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: isHalloween ? ThemeController.halloweenBackground : colorScheme.surface,
-          selectedItemColor: isHalloween ? ThemeController.halloweenPrimary : colorScheme.primary,
-          unselectedItemColor: isHalloween ? Colors.white70 : colorScheme.onSurfaceVariant,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_bag),
-              label: 'Orders',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
-        ),
+        
         floatingActionButton: FloatingActionButton(
           onPressed: () => Get.toNamed('/jahitbaju'),
           backgroundColor: isHalloween ? ThemeController.halloweenPrimary : colorScheme.primary,
@@ -100,8 +73,49 @@ class CheckOrderView extends GetView<CheckOrderController> {
             color: isHalloween ? Colors.white : colorScheme.onPrimary,
           ),
         ),
+        bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: Offset(0, -5),
+            ),
+          ],
+        ),
+        child: Obx(() => BottomNavigationBar(
+          elevation: 0,
+          type: BottomNavigationBarType.fixed,
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+          selectedLabelStyle: TextStyle(fontSize: 12),
+          unselectedLabelStyle: TextStyle(fontSize: 12),
+          backgroundColor: themeController.isHalloweenTheme.value 
+              ? ThemeController.halloweenCardBg 
+              : Colors.white,
+          items: [
+            _buildNavBarItem(Icons.home_outlined, Icons.home, 'Home'),
+            _buildNavBarItem(Icons.search_outlined, Icons.search, 'Search'),
+            _buildNavBarItem(Icons.shopping_bag_outlined, Icons.shopping_bag, 'Orders'),
+            _buildNavBarItem(Icons.person_outline, Icons.person, 'Profile'),
+          ],
+          currentIndex: controller.selectedIndex.value,
+          selectedItemColor: themeController.isHalloweenTheme.value 
+              ? ThemeController.halloweenPrimary 
+              : Colors.blue[700],
+          unselectedItemColor: Colors.grey[600],
+          onTap: controller.onNavBarTapped,
+        )),
+      ),
       );
     });
+  }
+  BottomNavigationBarItem _buildNavBarItem(IconData icon, IconData activeIcon, String label) {
+    return BottomNavigationBarItem(
+      icon: Icon(icon),
+      activeIcon: Icon(activeIcon),
+      label: label,
+    );
   }
 
   Widget _buildSliverAppBar(ColorScheme colorScheme, bool isHalloween) {

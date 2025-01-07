@@ -13,6 +13,9 @@ abstract class Routes {
   static const MEASUREMENT = _Paths.MEASUREMENTS;
   static const ABOUT = _Paths.ABOUT;
   static const ACCOUNT = _Paths.ACCOUNT;
+  static const SEARCH = _Paths.SEARCH;
+  static const FEEDBACK = _Paths.FEEDBACK; // Add the new route for SearchView
+  static const PAYMENT = _Paths.PAYMENT;
 }
 
 abstract class _Paths {
@@ -27,4 +30,7 @@ abstract class _Paths {
   static const MEASUREMENTS = '/measurements';
   static const ABOUT = '/about';
   static const ACCOUNT = '/account-settings';
+  static const SEARCH = '/search';
+  static const FEEDBACK = '/feedback';
+  static const PAYMENT = '/payment'; // Add the new path for SearchView
 }

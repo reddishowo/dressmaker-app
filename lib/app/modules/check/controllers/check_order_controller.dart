@@ -10,6 +10,7 @@ class CheckOrderController extends GetxController {
   
   final orders = <DocumentSnapshot>[].obs;
   final isLoading = true.obs;
+  final RxInt selectedIndex = 2.obs;
 
   @override
   void onInit() {
@@ -122,6 +123,23 @@ class CheckOrderController extends GetxController {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
+    }
+  }
+  void onNavBarTapped(int index) {
+    selectedIndex.value = index;
+    switch (index) {
+      case 0: // Home
+        Get.offAllNamed('/home');
+        break;
+      case 1: // Search
+         Get.toNamed('/search');
+        break;
+      case 2: // Orders
+        Get.offAllNamed('/check');
+        break;
+      case 3: // Profile
+        Get.offAllNamed('/profile');
+        break;
     }
   }
 }
