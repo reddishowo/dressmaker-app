@@ -10,6 +10,20 @@ class PaymentController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxDouble amount = 0.0.obs;
   final RxList<PaymentMethodModel> paymentMethods = <PaymentMethodModel>[].obs;
+  final RxList<String> availableMethods = <String>[
+    'BCA Virtual Account',
+    'Mandiri Virtual Account',
+    'BNI Virtual Account',
+    'BRI Virtual Account',
+    'Permata Virtual Account',
+    'OVO',
+    'GoPay',
+    'DANA',
+    'ShopeePay',
+    'LinkAja',
+    'QRIS',
+    'Credit Card',
+  ].obs;
 
   @override
   void onInit() {
@@ -17,7 +31,6 @@ class PaymentController extends GetxController {
     fetchPaymentMethods();
   }
 
-  // Fetch payment methods from Firebase
   Future<void> fetchPaymentMethods() async {
     try {
       final snapshot = await _firestore.collection('payment_methods').get();
@@ -30,10 +43,14 @@ class PaymentController extends GetxController {
     }
   }
 
-  // Add new payment method
-  Future<void> addPaymentMethod(PaymentMethodModel method) async {
+  Future<void> addPaymentMethod(String methodName, double fee) async {
     try {
       isLoading.value = true;
+      final method = PaymentMethodModel(
+        name: methodName,
+        fee: fee,
+      );
+      
       final docRef = _firestore.collection('payment_methods').doc();
       method.id = docRef.id;
       await docRef.set(method.toJson());
@@ -47,26 +64,7 @@ class PaymentController extends GetxController {
     }
   }
 
-  // Update payment method
-  Future<void> updatePaymentMethod(PaymentMethodModel method) async {
-    try {
-      isLoading.value = true;
-      await _firestore
-          .collection('payment_methods')
-          .doc(method.id)
-          .update(method.toJson());
-      await fetchPaymentMethods();
-      Get.back(); // Close dialog
-      Get.snackbar('Sukses', 'Metode pembayaran berhasil diperbarui');
-    } catch (e) {
-      Get.snackbar('Error', 'Gagal memperbarui metode pembayaran: $e');
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  // Delete payment method
-  Future<void> showdeletePaymentMethod(String id) async {
+  Future<void> deletePaymentMethod(String id) async {
     try {
       isLoading.value = true;
       await _firestore.collection('payment_methods').doc(id).delete();
@@ -111,7 +109,6 @@ class PaymentController extends GetxController {
 
       Get.snackbar('Sukses', 'Pembayaran berhasil diproses');
       
-      // Reset form dan navigate ke home
       selectedMethod.value = '';
       amount.value = 0.0;
       Get.offAllNamed('/home');
