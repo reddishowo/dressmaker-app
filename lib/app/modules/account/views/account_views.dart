@@ -99,19 +99,24 @@ class AccountSettingsView extends GetView<AccountSettingsController> {
                   backgroundColor: themeController.isHalloweenTheme.value
                       ? ThemeController.halloweenCardBg
                       : Colors.grey[200],
-                  child: Text(
-                    controller.authController.currentUser.value?.username
-                            .substring(0, 1)
-                            .toUpperCase() ??
-                        'U',
-                    style: TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
-                      color: themeController.isHalloweenTheme.value
-                          ? ThemeController.halloweenPrimary
-                          : Colors.black87,
-                    ),
-                  ),
+                  backgroundImage: controller.profileImage != null
+                      ? FileImage(controller.profileImage!)
+                      : null,
+                  child: controller.profileImage == null
+                      ? Text(
+                          controller.authController.currentUser.value?.username
+                                  ?.substring(0, 1)
+                                  ?.toUpperCase() ??
+                              'U',
+                          style: TextStyle(
+                            fontSize: 48,
+                            fontWeight: FontWeight.bold,
+                            color: themeController.isHalloweenTheme.value
+                                ? ThemeController.halloweenPrimary
+                                : Colors.black87,
+                          ),
+                        )
+                      : null,
                 ),
               ),
               Positioned(
@@ -120,18 +125,21 @@ class AccountSettingsView extends GetView<AccountSettingsController> {
                 child: Material(
                   elevation: 4,
                   shape: CircleBorder(),
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: themeController.isHalloweenTheme.value
-                          ? ThemeController.halloweenPrimary
-                          : Colors.blue,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                      size: 20,
+                  child: GestureDetector(
+                    onTap: controller.pickImage,
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: themeController.isHalloweenTheme.value
+                            ? ThemeController.halloweenPrimary
+                            : Colors.blue,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.camera_alt,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
                   ),
                 ),
@@ -272,7 +280,8 @@ class AccountSettingsView extends GetView<AccountSettingsController> {
                   width: 1.5,
                 ),
               ),
-              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             ),
           ),
         ),
