@@ -29,43 +29,47 @@ class HomeView extends GetView<HomeController> {
             : Colors.white,
         elevation: 0,
         actions: [
-          IconButton(
-            icon: Stack(
-              children: [
-                Icon(
-                  Icons.notifications_outlined, 
-                  color: themeController.isHalloweenTheme.value 
-                      ? ThemeController.halloweenPrimary 
-                      : Colors.black87,
-                  size: 28
-                ),
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    padding: EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    constraints: BoxConstraints(
-                      minWidth: 14,
-                      minHeight: 14,
-                    ),
-                    child: Text(
-                      '1',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 8,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            onPressed: () {},
+IconButton(
+  icon: Stack(
+    children: [
+      Icon(
+        Icons.notifications_outlined, 
+        color: themeController.isHalloweenTheme.value 
+            ? ThemeController.halloweenPrimary 
+            : Colors.black87,
+        size: 28,
+      ),
+      Positioned(
+        right: 0,
+        top: 0,
+        child: Container(
+          padding: EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(6),
           ),
+          constraints: BoxConstraints(
+            minWidth: 14,
+            minHeight: 14,
+          ),
+          child: Text(
+            '1',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 8,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    ],
+  ),
+  onPressed: () {
+    // Navigasi ke halaman /voucher
+    Get.toNamed('/voucher');
+  },
+),
+
           SizedBox(width: 8),
         ],
       ),

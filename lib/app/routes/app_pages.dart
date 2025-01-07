@@ -19,6 +19,8 @@ import 'package:clothing_store/app/modules/profiles/bindings/profile_binding.dar
 import 'package:clothing_store/app/modules/profiles/views/profile_view.dart';
 import 'package:clothing_store/app/modules/search/bindings/search_binding.dart'; // Import SearchBinding
 import 'package:clothing_store/app/modules/search/views/search_view.dart'; // Import SearchView
+import 'package:clothing_store/app/modules/voucher/bindings/voucher_binding.dart';
+import 'package:clothing_store/app/modules/voucher/views/voucher_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/home/bindings/home_binding.dart';
@@ -110,6 +112,11 @@ class AppPages {
       name: _Paths.PAYMENT,
       page: () => PaymentView(),
       binding: PaymentBinding(),
+    ),
+    GetPage(
+      name: _Paths.VOUCHER,
+      page: () => VoucherView(),
+      binding: VoucherBinding(),
     ),
   ];
 }
