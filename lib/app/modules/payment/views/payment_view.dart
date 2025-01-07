@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/payment_controller.dart';
 import '../../../data/models/payment_method_model.dart';
-
 class PaymentView extends GetView<PaymentController> {
   const PaymentView({Key? key}) : super(key: key);
 
@@ -119,6 +118,22 @@ class PaymentView extends GetView<PaymentController> {
     final isEditing = method != null;
     final nameController = TextEditingController(text: method?.name);
     final feeController = TextEditingController(text: method?.fee?.toString());
+    
+    // Daftar opsi metode pembayaran yang tersedia
+    final List<Map<String, dynamic>> presetMethods = [
+      {'name': 'BCA Virtual Account', 'fee': 4000},
+      {'name': 'Mandiri Virtual Account', 'fee': 4000},
+      {'name': 'BNI Virtual Account', 'fee': 4000},
+      {'name': 'BRI Virtual Account', 'fee': 4000},
+      {'name': 'Permata Virtual Account', 'fee': 4000},
+      {'name': 'OVO', 'fee': 3000},
+      {'name': 'GoPay', 'fee': 3000},
+      {'name': 'DANA', 'fee': 3000},
+      {'name': 'ShopeePay', 'fee': 3000},
+      {'name': 'LinkAja', 'fee': 3000},
+      {'name': 'QRIS', 'fee': 2000},
+      {'name': 'Credit Card', 'fee': 5000},
+    ];
 
     Get.dialog(
       Dialog(
@@ -135,6 +150,42 @@ class PaymentView extends GetView<PaymentController> {
                 ),
               ),
               const SizedBox(height: 16),
+              if (!isEditing) ...[
+                const Text(
+                  'Pilih Metode Tersedia:',
+                  style: TextStyle(fontSize: 14),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: presetMethods.length,
+                    itemBuilder: (context, index) {
+                      final preset = presetMethods[index];
+                      return ListTile(
+                        title: Text(preset['name']),
+                        subtitle: Text('Biaya: Rp ${preset['fee']}'),
+                        onTap: () {
+                          nameController.text = preset['name'];
+                          feeController.text = preset['fee'].toString();
+                        },
+                        dense: true,
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Atau isi manual:',
+                  style: TextStyle(fontSize: 14),
+                ),
+                const SizedBox(height: 8),
+              ],
               TextField(
                 controller: nameController,
                 decoration: const InputDecoration(
@@ -154,25 +205,13 @@ class PaymentView extends GetView<PaymentController> {
               ),
               const SizedBox(height: 24),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  if (isEditing) ...[
-                    ElevatedButton(
-                      onPressed: () {
-                        controller.showdeletePaymentMethod(method!.id!);
-                        Get.back();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                      ),
-                      child: const Text('Hapus'),
-                    ),
-                  ],
-                  const Spacer(),
                   TextButton(
                     onPressed: () => Get.back(),
                     child: const Text('Batal'),
                   ),
+                  const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
                       if (nameController.text.isEmpty || feeController.text.isEmpty) {
@@ -195,7 +234,6 @@ class PaymentView extends GetView<PaymentController> {
                       } else {
                         controller.addPaymentMethod(newMethod);
                       }
-                      Get.back();
                     },
                     child: Text(isEditing ? 'Simpan' : 'Tambah'),
                   ),
