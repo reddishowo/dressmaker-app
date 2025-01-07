@@ -277,30 +277,42 @@ class AdminDashboardController extends GetxController {
     recentOrders.value = allOrders.take(5).toList();
   }
 
-  Future<void> loadRecentFeedback() async {
-    try {
-      final feedbackSnapshot = await _firestore
-          .collection('feedback')
-          .orderBy('createdAt', descending: true)
-          .limit(10)
+Future<void> loadRecentFeedback() async {
+  try {
+    final feedbackSnapshot = await _firestore
+        .collection('feedback')
+        .orderBy('createdAt', descending: true)
+        .limit(10)
+        .get();
+
+    final feedbackList = <FeedbackModel>[];
+
+    for (var doc in feedbackSnapshot.docs) {
+      // Get user data for each feedback
+      final userData = await _firestore
+          .collection('users')
+          .doc(doc.data()['userId'])
           .get();
 
-      recentFeedback.value = feedbackSnapshot.docs
-          .map((doc) => FeedbackModel.fromJson({
-                'id': doc.id,
-                ...doc.data(),
-              }))
-          .toList();
-    } catch (e) {
-      print('Error loading feedback: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to load feedback data',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      feedbackList.add(FeedbackModel.fromJson({
+        'id': doc.id,
+        ...doc.data(),
+        'userName': userData.data()?['username'] ?? 'Unknown User',
+        'userEmail': userData.data()?['email'] ?? 'No Email',
+      }));
     }
+
+    recentFeedback.value = feedbackList;
+  } catch (e) {
+    print('Error loading feedback: $e');
+    Get.snackbar(
+      'Error',
+      'Failed to load feedback data',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
   }
+}
 
   Future<void> deleteFeedback(String feedbackId) async {
     try {
@@ -661,4 +673,95 @@ class AdminDashboardController extends GetxController {
       ),
     );
   }
+
+  Future<void> updateOrderStatus(String userId, String orderId, String newStatus) async {
+  try {
+    // Update in Firestore
+    await _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('orders')
+        .doc(orderId)
+        .update({'status': newStatus});
+
+    // Update in local state
+    if (userOrders.containsKey(userId)) {
+      final orderIndex = userOrders[userId]?.indexWhere((order) => order['id'] == orderId) ?? -1;
+      if (orderIndex != -1) {
+        userOrders[userId]?[orderIndex] = {
+          ...userOrders[userId]![orderIndex],
+          'status': newStatus,
+        };
+      }
+    }
+
+    Get.snackbar(
+      'Success',
+      'Order status updated successfully',
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 2),
+    );
+  } catch (e) {
+    Get.snackbar(
+      'Error',
+      'Failed to update order status: $e',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 3),
+    );
+  }
+}
+
+void showOrderStatusDialog(String userId, String orderId, String currentStatus) {
+  Get.dialog(
+    AlertDialog(
+      title: const Text('Update Order Status'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            title: const Text('Completed'),
+            leading: Radio<String>(
+              value: 'Completed',
+              groupValue: currentStatus,
+              onChanged: (value) {
+                Get.back();
+                updateOrderStatus(userId, orderId, value!);
+              },
+            ),
+          ),
+          ListTile(
+            title: const Text('Dalam Proses'),
+            leading: Radio<String>(
+              value: 'Dalam Proses',
+              groupValue: currentStatus,
+              onChanged: (value) {
+                Get.back();
+                updateOrderStatus(userId, orderId, value!);
+              },
+            ),
+          ),
+          ListTile(
+            title: const Text('Cancelled'),
+            leading: Radio<String>(
+              value: 'Cancelled',
+              groupValue: currentStatus,
+              onChanged: (value) {
+                Get.back();
+                updateOrderStatus(userId, orderId, value!);
+              },
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Get.back(),
+          child: const Text('Cancel'),
+        ),
+      ],
+    ),
+  );
+}
 }

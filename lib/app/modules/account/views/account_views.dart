@@ -105,8 +105,8 @@ class AccountSettingsView extends GetView<AccountSettingsController> {
                   child: controller.profileImage == null
                       ? Text(
                           controller.authController.currentUser.value?.username
-                                  ?.substring(0, 1)
-                                  ?.toUpperCase() ??
+                                  .substring(0, 1)
+                                  .toUpperCase() ??
                               'U',
                           style: TextStyle(
                             fontSize: 48,

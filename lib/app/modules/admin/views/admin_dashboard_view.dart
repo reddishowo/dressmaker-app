@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -7,7 +9,7 @@ import '../../../data/services/authentication_controller.dart';
 class AdminDashboardView extends GetView<AdminDashboardController> {
   const AdminDashboardView({Key? key}) : super(key: key);
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -23,33 +25,30 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
           ),
         ],
       ),
-      // Wrap the entire body in a SafeArea widget
       body: SafeArea(
         child: Obx(
           () => controller.isLoading.value
               ? const Center(child: CircularProgressIndicator())
               : RefreshIndicator(
                   onRefresh: controller.refreshData,
-                  child: CustomScrollView(
-                    // Use CustomScrollView with SliverList for better performance
-                    slivers: [
-                      SliverPadding(
-                        padding: const EdgeInsets.all(16),
-                        sliver: SliverList(
-                          delegate: SliverChildListDelegate([
-                            _buildStatisticsSection(),
-                            const SizedBox(height: 24),
-                            _buildRecentFeedbackSection(),
-                            const SizedBox(height: 24),
-                            _buildRecentUsersSection(),
-                            const SizedBox(height: 24),
-                            _buildAllUsersOrdersSection(),
-                            // Add bottom padding to prevent overflow
-                            const SizedBox(height: 32),
-                          ]),
-                        ),
+                  child: SingleChildScrollView( // Changed to SingleChildScrollView
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildStatisticsSection(),
+                          const SizedBox(height: 24),
+                          _buildRecentFeedbackSection(),
+                          const SizedBox(height: 24),
+                          _buildRecentUsersSection(),
+                          const SizedBox(height: 24),
+                          _buildAllUsersOrdersSection(),
+                          const SizedBox(height: 32),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
         ),
@@ -113,36 +112,38 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
           ],
         ),
       ),
-    );  
+    );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+      String title, String value, IconData icon, Color color) {
     return Container(
       decoration: BoxDecoration(
         color: color.withOpacity(0),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color.withOpacity(0.2)),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),  // Kurangi padding horizontal
+      padding: const EdgeInsets.symmetric(
+          horizontal: 8, vertical: 16), // Kurangi padding horizontal
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 24),  // Kurangi ukuran icon
-          const SizedBox(height: 8),  // Kurangi spacing
+          Icon(icon, size: 24), // Kurangi ukuran icon
+          const SizedBox(height: 8), // Kurangi spacing
           Text(
             title,
             style: TextStyle(
-              fontSize: 12,  // Kurangi ukuran font
+              fontSize: 12, // Kurangi ukuran font
               color: color.withOpacity(0.8),
               fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 4),  // Kurangi spacing
+          const SizedBox(height: 4), // Kurangi spacing
           Text(
             value,
             style: TextStyle(
-              fontSize: 20,  // Kurangi ukuran font
+              fontSize: 20, // Kurangi ukuran font
               fontWeight: FontWeight.bold,
               color: color.withOpacity(0.9),
             ),
@@ -153,7 +154,7 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
     );
   }
 
-  Widget _buildRecentFeedbackSection() {
+ Widget _buildRecentFeedbackSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -186,47 +187,55 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
               );
             }
 
-            return ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              itemCount: 3, // Show only 3 most recent feedback
-              separatorBuilder: (context, index) => const Divider(),
-              itemBuilder: (context, index) {
-                if (index >= controller.recentFeedback.length) {
-                  return const SizedBox.shrink();
-                }
-                
-                final feedback = controller.recentFeedback[index];
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: feedback.adminResponse != null ? Colors.green : Colors.orange,
-                    child: Icon(
-                      feedback.adminResponse != null ? Icons.check : Icons.pending,
-                      color: Colors.white,
-                    ),
-                  ),
-                  title: Text(
-                    feedback.text,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text(
-                    '${DateFormat('MMM d, y').format(feedback.createdAt)}\nFrom: ${feedback.userId}',
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () => controller.showFeedbackDetailDialog(feedback),
-                  ),
-                  onTap: () => controller.showFeedbackDetailDialog(feedback),
-                );
-              },
+            return Column( // Wrap ListView in Column to prevent height issues
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(
+                min(3, controller.recentFeedback.length),
+                (index) {
+                  final feedback = controller.recentFeedback[index];
+                  return Column(
+                    children: [
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: feedback.adminResponse != null
+                              ? Colors.green
+                              : Colors.orange,
+                          child: Icon(
+                            feedback.adminResponse != null
+                                ? Icons.check
+                                : Icons.pending,
+                            color: Colors.white,
+                          ),
+                        ),
+                        title: Text(
+                          feedback.text,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Text(
+                          '${DateFormat('MMM d, y').format(feedback.createdAt)}\nFrom: ${feedback.userName ?? 'Unknown User'}',
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.arrow_forward_ios, size: 16),
+                          onPressed: () =>
+                              controller.showFeedbackDetailDialog(feedback),
+                        ),
+                        onTap: () =>
+                            controller.showFeedbackDetailDialog(feedback),
+                      ),
+                      if (index < min(2, controller.recentFeedback.length - 1))
+                        const Divider(),
+                    ],
+                  );
+                },
+              ),
             );
           }),
         ),
       ],
     );
   }
+
 
   Widget _buildRecentUsersSection() {
     return Column(
@@ -295,6 +304,7 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
     );
   }
 
+
   Widget _buildAllUsersOrdersSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,18 +322,9 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
             DropdownButton<String>(
               value: 'all',
               items: const [
-                DropdownMenuItem(
-                  value: 'all',
-                  child: Text('All Orders'),
-                ),
-                DropdownMenuItem(
-                  value: 'pending',
-                  child: Text('Pending'),
-                ),
-                DropdownMenuItem(
-                  value: 'completed',
-                  child: Text('Completed'),
-                ),
+                DropdownMenuItem(value: 'all', child: Text('All Orders')),
+                DropdownMenuItem(value: 'pending', child: Text('Pending')),
+                DropdownMenuItem(value: 'completed', child: Text('Completed')),
               ],
               onChanged: (value) {
                 // Implement filter functionality
@@ -332,88 +333,89 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
           ],
         ),
         const SizedBox(height: 16),
-        ...controller.userOrders.entries.map((entry) {
-          final userId = entry.key;
-          final orders = entry.value;
-          if (orders.isEmpty) return const SizedBox.shrink();
+        Column(
+          children: controller.userOrders.entries.map((entry) {
+            final userId = entry.key;
+            final orders = entry.value;
+            if (orders.isEmpty) return const SizedBox.shrink();
 
-          return Card(
-            margin: const EdgeInsets.only(bottom: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListTile(
-                  title: Row(
-                    children: [
-                      Text(
-                        orders.first['userName'] ?? 'Unknown User',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.blue[100],
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          '${orders.length} orders',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.blue[900],
+            return Card(
+              margin: const EdgeInsets.only(bottom: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // User Header
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.blue,
+                          child: Text(
+                            (orders.first['userName'] as String)[0].toUpperCase(),
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  subtitle: Text(orders.first['userEmail'] ?? 'No Email'),
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.blue,
-                    child: Text(
-                      (orders.first['userName'] as String)[0].toUpperCase(),
-                      style: const TextStyle(color: Colors.white),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                orders.first['userName'] ?? 'Unknown User',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Text(
+                                orders.first['userEmail'] ?? 'No Email',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.blue[100],
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            '${orders.length} orders',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.blue[900],
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.straighten, color: Colors.blue),
+                          tooltip: 'View Measurements',
+                          onPressed: () => controller.showMeasurementDialog(
+                            userId,
+                            orders.first['userName'] ?? 'Unknown User',
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.straighten, color: Colors.blue),
-                        tooltip: 'View Measurements',
-                        onPressed: () => controller.showMeasurementDialog(
-                          userId,
-                          orders.first['userName'] ?? 'Unknown User',
-                        ),
-                      ),
-                      const Icon(Icons.chevron_right),
-                    ],
-                  ),
-                  onTap: () => controller.showMeasurementDialog(
-                    userId,
-                    orders.first['userName'] ?? 'Unknown User',
-                  ),
-                ),
-                const Divider(),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: EdgeInsets.zero,
-                  itemCount: orders.length,
-                  itemBuilder: (context, index) {
-                    final order = orders[index];
+                  const Divider(height: 1),
+                  // Orders List
+                  ...orders.map((order) {
                     return Dismissible(
                       key: Key(order['id']),
                       background: Container(
                         color: Colors.red,
                         alignment: Alignment.centerRight,
                         padding: const EdgeInsets.only(right: 16),
-                        child: const Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                        ),
+                        child: const Icon(Icons.delete, color: Colors.white),
                       ),
                       direction: DismissDirection.endToStart,
                       confirmDismiss: (direction) async {
@@ -437,66 +439,87 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
                               ),
                             ],
                           ),
-                        ) ?? false;
+                        ) ??
+                            false;
                       },
                       onDismissed: (direction) {
                         controller.deleteOrder(userId, order['id']);
                       },
-                      child: ListTile(
-                        leading: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Icon(
-                            Icons.shopping_bag,
-                            color: Colors.blue,
-                          ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
                         ),
-                        title: Text(
-                          order['name'] ?? 'Unnamed Order',
-                          style: const TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 4),
-                            Row(
-                              children: [
-                                _buildStatusChip(order['status']),
-                                const SizedBox(width: 8),
-                                Text(
-                                  DateFormat('MMM d, y').format(order['date']),
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                              ],
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.grey[200]!,
+                              width: 1,
                             ),
-                            if (order['notes'] != null && order['notes'].isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 4),
-                                child: Text(
-                                  order['notes'],
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                          ],
+                          ),
                         ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
+                        child: Row(
                           children: [
+                            // Order Icon
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(
+                                Icons.shopping_bag,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            // Order Details
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    order['name'] ?? 'Unnamed Order',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      _buildStatusChip(order['status']),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        DateFormat('MMM d, y').format(order['date']),
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (order['notes'] != null &&
+                                      order['notes'].isNotEmpty)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 4),
+                                      child: Text(
+                                        order['notes'],
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey[600],
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            // Price and Actions
                             Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,children: [
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
                                 if (order['total'] != null)
                                   Text(
                                     '\$${order['total'].toStringAsFixed(2)}',
@@ -507,7 +530,7 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
                                   ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  '${order['clothingType'] ?? 'N/A'}',
+                                  order['clothingType'] ?? 'N/A',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Colors.grey[600],
@@ -515,25 +538,47 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
                                 ),
                               ],
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => controller.deleteOrder(userId, order['id']),
+                            // Action Buttons
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.edit_note),
+                                  onPressed: () =>
+                                      controller.showOrderStatusDialog(
+                                        userId,
+                                        order['id'],
+                                        order['status'] ?? 'Pending',
+                                      ),
+                                  padding: const EdgeInsets.all(8),
+                                  constraints: const BoxConstraints(),
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () =>
+                                      controller.deleteOrder(userId, order['id']),
+                                  padding: const EdgeInsets.all(8),
+                                  constraints: const BoxConstraints(),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
                     );
-                  },
-                ),
-              ],
-            ),
-          );
-        }).toList(),
+                  }).toList(),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
       ],
     );
   }
-
-  Widget _buildStatusChip(String status) {
+   Widget _buildStatusChip(String status) {
     Color backgroundColor;
     Color textColor;
 
@@ -572,7 +617,7 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
           color: textColor,
           fontWeight: FontWeight.w500,
         ),
-      ),  
+      ),
     );
   }
 }

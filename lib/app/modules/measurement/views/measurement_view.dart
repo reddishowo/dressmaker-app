@@ -162,19 +162,6 @@ class MeasurementView extends GetView<MeasurementController> {
               ),
               onPressed: () => Get.back(),
             ),
-            actions: [
-              IconButton(
-                icon: Icon(
-                  themeController.isHalloweenTheme.value
-                      ? Icons.nightlight_round
-                      : Icons.wb_sunny,
-                  color: themeController.isHalloweenTheme.value
-                      ? ThemeController.halloweenPrimary
-                      : Colors.black,
-                ),
-                onPressed: themeController.toggleTheme,
-              ),
-            ],
           ),
           body: controller.isLoading.value
               ? Center(
