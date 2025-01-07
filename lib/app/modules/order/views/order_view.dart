@@ -57,6 +57,18 @@ class OrderView extends StatelessWidget {
                     
                     SizedBox(height: 24),
                     
+                    // Order Pickup Type
+                    _buildSectionTitle('Pengambilan Pesanan', colorScheme, isHalloween),
+                    _buildPickupTypeSelector(controller, colorScheme, isHalloween),
+                    
+                    if (controller.isDelivery.value) ...[
+                      SizedBox(height: 24),
+                      _buildSectionTitle('Alamat Pengiriman', colorScheme, isHalloween),
+                      _buildAddressField(controller, colorScheme, isHalloween),
+                    ],
+                    
+                    SizedBox(height: 24),
+                    
                     // Meeting Date Picker
                     _buildSectionTitle('Tanggal Pertemuan', colorScheme, isHalloween),
                     _buildDatePicker(context, controller, colorScheme, isHalloween),
@@ -81,6 +93,85 @@ class OrderView extends StatelessWidget {
         ),
       );
     });
+  }
+
+  Widget _buildPickupTypeSelector(OrderController controller, ColorScheme colorScheme, bool isHalloween) {
+    return Obx(() => Row(
+      children: [
+        Expanded(
+          child: RadioListTile<bool>(
+            title: Text(
+              'Diambil',
+              style: TextStyle(
+                color: isHalloween ? Colors.white : colorScheme.onSurface,
+                fontSize: 16,
+              ),
+            ),
+            value: false,
+            groupValue: controller.isDelivery.value,
+            onChanged: (value) => controller.setDelivery(value ?? false),
+          ),
+        ),
+        Expanded(
+          child: RadioListTile<bool>(
+            title: Text(
+              'Diantar',
+              style: TextStyle(
+                color: isHalloween ? Colors.white : colorScheme.onSurface,
+                fontSize: 16,
+              ),
+            ),
+            value: true,
+            groupValue: controller.isDelivery.value,
+            onChanged: (value) => controller.setDelivery(value ?? true),
+          ),
+        ),
+      ],
+    ));
+  }
+
+  Widget _buildAddressField(OrderController controller, ColorScheme colorScheme, bool isHalloween) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isHalloween 
+            ? ThemeController.halloweenCardBg
+            : colorScheme.surfaceVariant.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isHalloween 
+              ? ThemeController.halloweenPrimary.withOpacity(0.3)
+              : colorScheme.primary.withOpacity(0.1),
+          width: 1,
+        ),
+      ),
+      child: TextField(
+        controller: controller.deliveryAddressController,
+        maxLines: 3,
+        style: TextStyle(
+          color: isHalloween ? Colors.white : colorScheme.onSurface,
+          fontSize: 16,
+        ),
+        decoration: InputDecoration(
+          hintText: 'Masukkan alamat pengiriman...',
+          hintStyle: TextStyle(
+            color: isHalloween ? Colors.white38 : colorScheme.onSurfaceVariant,
+            fontSize: 16,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide(
+              color: isHalloween ? ThemeController.halloweenPrimary : colorScheme.primary,
+              width: 2,
+            ),
+          ),
+          contentPadding: EdgeInsets.all(20),
+        ),
+      ),
+    );
   }
 
   SliverAppBar _buildSliverAppBar(ColorScheme colorScheme, bool isHalloween) {

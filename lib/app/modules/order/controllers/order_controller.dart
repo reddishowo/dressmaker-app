@@ -11,7 +11,10 @@ class OrderController extends GetxController {
   var selectedClothingType = ''.obs;
   var selectedFabricType = ''.obs;
   var meetingDate = DateTime.now().obs;
+  var isDelivery = false.obs;
+
   TextEditingController additionalNotesController = TextEditingController();
+  TextEditingController deliveryAddressController = TextEditingController();
 
   void setClothingType(String type) {
     selectedClothingType.value = type;
@@ -23,6 +26,10 @@ class OrderController extends GetxController {
 
   void setMeetingDate(DateTime date) {
     meetingDate.value = date;
+  }
+
+  void setDelivery(bool value) {
+    isDelivery.value = value;
   }
 
   Future<void> submitOrder() async {
@@ -47,6 +54,16 @@ class OrderController extends GetxController {
         return;
       }
 
+      if (isDelivery.value && deliveryAddressController.text.isEmpty) {
+        Get.snackbar(
+          "Error",
+          "Please enter a delivery address",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return;
+      }
+
       final String userId = authController.currentUser.value!.id;
       final String orderId = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -58,6 +75,8 @@ class OrderController extends GetxController {
         'fabricType': selectedFabricType.value,
         'meetingDate': meetingDate.value,
         'notes': additionalNotesController.text,
+        'delivery': isDelivery.value,
+        'deliveryAddress': isDelivery.value ? deliveryAddressController.text : null,
         'status': 'Dalam Proses',
         'date': FieldValue.serverTimestamp(),
         'userId': userId,
@@ -90,6 +109,8 @@ class OrderController extends GetxController {
       selectedFabricType.value = '';
       meetingDate.value = DateTime.now();
       additionalNotesController.clear();
+      deliveryAddressController.clear();
+      isDelivery.value = false;
 
       // Show success message
       Get.snackbar(
@@ -118,6 +139,7 @@ class OrderController extends GetxController {
   @override
   void onClose() {
     additionalNotesController.dispose();
+    deliveryAddressController.dispose();
     super.onClose();
   }
 }
