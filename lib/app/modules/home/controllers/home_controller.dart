@@ -126,7 +126,7 @@ class HomeController extends GetxController {
         Get.offAllNamed('/home');
         break;
       case 1: // Search
-         Get.toNamed('/search');
+        Get.toNamed('/search');
         break;
       case 2: // Orders
         Get.offAllNamed('/check');
@@ -159,232 +159,234 @@ class HomeController extends GetxController {
   }
 
   void showAllSizesModal() {
-  final themeController = Get.find<ThemeController>();
-  
-  Get.dialog(
-    Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      child: Obx(() => Container(
-            constraints: BoxConstraints(maxHeight: Get.height * 0.85),
-            decoration: BoxDecoration(
-              color: themeController.isHalloweenTheme.value
-                  ? ThemeController.halloweenCardBg
-                  : Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: themeController.isHalloweenTheme.value
-                      ? ThemeController.halloweenPrimary.withOpacity(0.2)
-                      : Colors.black.withOpacity(0.1),
-                  blurRadius: 15,
-                  offset: Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Header
-                Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
+    final themeController = Get.find<ThemeController>();
+
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Obx(() => Container(
+              constraints: BoxConstraints(maxHeight: Get.height * 0.85),
+              decoration: BoxDecoration(
+                color: themeController.isHalloweenTheme.value
+                    ? ThemeController.halloweenCardBg
+                    : Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
                     color: themeController.isHalloweenTheme.value
-                        ? ThemeController.halloweenBackground
-                        : Colors.grey[50],
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
+                        ? ThemeController.halloweenPrimary.withOpacity(0.2)
+                        : Colors.black.withOpacity(0.1),
+                    blurRadius: 15,
+                    offset: Offset(0, 5),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.straighten,
-                            size: 28,
-                            color: themeController.isHalloweenTheme.value
-                                ? ThemeController.halloweenPrimary
-                                : Colors.blue[700],
-                          ),
-                          SizedBox(width: 12),
-                          Text(
-                            'Semua Ukuran',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: themeController.isHalloweenTheme.value
-                                  ? Colors.white
-                                  : Colors.black87,
-                            ),
-                          ),
-                        ],
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.close,
-                          color: themeController.isHalloweenTheme.value
-                              ? Colors.white70
-                              : Colors.black54,
-                          size: 24,
-                        ),
-                        onPressed: () => Get.back(),
-                      ),
-                    ],
-                  ),
-                ),
-                
-                // Content
-                Flexible(
-                  child: SingleChildScrollView(
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Header
+                  Container(
                     padding: EdgeInsets.all(20),
-                    physics: BouncingScrollPhysics(),
-                    child: Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: allMeasurements.entries.map((entry) {
-                        return Container(
-                          width: Get.width * 0.4,
-                          decoration: BoxDecoration(
-                            color: themeController.isHalloweenTheme.value
-                                ? ThemeController.halloweenBackground
-                                : Colors.grey[50],
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
+                    decoration: BoxDecoration(
+                      color: themeController.isHalloweenTheme.value
+                          ? ThemeController.halloweenBackground
+                          : Colors.grey[50],
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.straighten,
+                              size: 28,
                               color: themeController.isHalloweenTheme.value
                                   ? ThemeController.halloweenPrimary
-                                      .withOpacity(0.2)
-                                  : Colors.grey[200]!,
-                              width: 1,
+                                  : Colors.blue[700],
                             ),
+                            SizedBox(width: 12),
+                            Text(
+                              'Semua Ukuran',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: themeController.isHalloweenTheme.value
+                                    ? Colors.white
+                                    : Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.close,
+                            color: themeController.isHalloweenTheme.value
+                                ? Colors.white70
+                                : Colors.black54,
+                            size: 24,
                           ),
-                          child: Stack(
-                            children: [
-                              if (themeController.isHalloweenTheme.value)
-                                Positioned(
-                                  right: -10,
-                                  top: -10,
-                                  child: Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: ThemeController.halloweenPrimary
-                                          .withOpacity(0.1),
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                ),
-                              Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      entry.key,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: themeController
-                                                .isHalloweenTheme.value
-                                            ? Colors.white70
-                                            : Colors.grey[600],
+                          onPressed: () => Get.back(),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Content
+                  Flexible(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.all(20),
+                      physics: BouncingScrollPhysics(),
+                      child: Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: allMeasurements.entries.map((entry) {
+                          return Container(
+                            width: Get.width * 0.4,
+                            decoration: BoxDecoration(
+                              color: themeController.isHalloweenTheme.value
+                                  ? ThemeController.halloweenBackground
+                                  : Colors.grey[50],
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(
+                                color: themeController.isHalloweenTheme.value
+                                    ? ThemeController.halloweenPrimary
+                                        .withOpacity(0.2)
+                                    : Colors.grey[200]!,
+                                width: 1,
+                              ),
+                            ),
+                            child: Stack(
+                              children: [
+                                if (themeController.isHalloweenTheme.value)
+                                  Positioned(
+                                    right: -10,
+                                    top: -10,
+                                    child: Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: ThemeController.halloweenPrimary
+                                            .withOpacity(0.1),
+                                        shape: BoxShape.circle,
                                       ),
                                     ),
-                                    SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          entry.value,
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: themeController
-                                                    .isHalloweenTheme.value
-                                                ? ThemeController.halloweenPrimary
-                                                : Colors.blue[700],
-                                          ),
+                                  ),
+                                Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        entry.key,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: themeController
+                                                  .isHalloweenTheme.value
+                                              ? Colors.white70
+                                              : Colors.grey[600],
                                         ),
-                                        Text(
-                                          ' cm',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: themeController
-                                                    .isHalloweenTheme.value
-                                                ? Colors.white70
-                                                : Colors.grey[600],
+                                      ),
+                                      SizedBox(height: 8),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            entry.value,
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: themeController
+                                                      .isHalloweenTheme.value
+                                                  ? ThemeController
+                                                      .halloweenPrimary
+                                                  : Colors.blue[700],
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                          Text(
+                                            ' cm',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: themeController
+                                                      .isHalloweenTheme.value
+                                                  ? Colors.white70
+                                                  : Colors.grey[600],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-                
-                // Footer
-                Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: themeController.isHalloweenTheme.value
-                        ? ThemeController.halloweenBackground
-                        : Colors.grey[50],
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton.icon(
-                          icon: Icon(Icons.edit_outlined),
-                          label: Text(
-                            'Ubah Ukuran',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                              ],
                             ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                themeController.isHalloweenTheme.value
-                                    ? ThemeController.halloweenPrimary
-                                    : Colors.blue[700],
-                            elevation: 2,
-                            shadowColor:
-                                themeController.isHalloweenTheme.value
-                                    ? ThemeController.halloweenPrimary
-                                        .withOpacity(0.4)
-                                    : Colors.blue.withOpacity(0.4),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: () {
-                            Get.back();
-                            goToMeasurements();
-                          },
-                        ),
+                          );
+                        }).toList(),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          )),
-    ),
-    barrierColor: themeController.isHalloweenTheme.value
-        ? Colors.black87
-        : Colors.black54,
-  );
-}
+
+                  // Footer
+                  Container(
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: themeController.isHalloweenTheme.value
+                          ? ThemeController.halloweenBackground
+                          : Colors.grey[50],
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton.icon(
+                            icon: Icon(Icons.edit_outlined),
+                            label: Text(
+                              'Ubah Ukuran',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  themeController.isHalloweenTheme.value
+                                      ? ThemeController.halloweenPrimary
+                                      : Colors.blue[700],
+                              elevation: 2,
+                              shadowColor:
+                                  themeController.isHalloweenTheme.value
+                                      ? ThemeController.halloweenPrimary
+                                          .withOpacity(0.4)
+                                      : Colors.blue.withOpacity(0.4),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () {
+                              Get.back();
+                              goToMeasurements();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )),
+      ),
+      barrierColor: themeController.isHalloweenTheme.value
+          ? Colors.black87
+          : Colors.black54,
+    );
+  }
 }
