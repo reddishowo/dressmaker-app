@@ -13,6 +13,8 @@ import 'package:clothing_store/app/modules/measurement/bindings/measurement_bind
 import 'package:clothing_store/app/modules/measurement/views/measurement_view.dart';
 import 'package:clothing_store/app/modules/order/bindings/order_binding.dart';
 import 'package:clothing_store/app/modules/order/views/order_view.dart';
+import 'package:clothing_store/app/modules/payment/bindings/payment_binding.dart';
+import 'package:clothing_store/app/modules/payment/views/payment_view.dart';
 import 'package:clothing_store/app/modules/profiles/bindings/profile_binding.dart';
 import 'package:clothing_store/app/modules/profiles/views/profile_view.dart';
 import 'package:clothing_store/app/modules/search/bindings/search_binding.dart'; // Import SearchBinding
@@ -103,6 +105,11 @@ class AppPages {
       name: _Paths.FEEDBACK,
       page: () => FeedbackView(),
       binding: FeedbackBinding(),
+    ),
+    GetPage(
+      name: _Paths.PAYMENT,
+      page: () => PaymentView(),
+      binding: PaymentBinding(),
     ),
   ];
 }

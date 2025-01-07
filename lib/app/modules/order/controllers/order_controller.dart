@@ -104,7 +104,7 @@ class OrderController extends GetxController {
       homeController.loadUserData();
 
       // Navigate back to home
-      Get.offNamed('/home');
+      Get.offNamed('/payment');
     } catch (e) {
       Get.snackbar(
         "Error",
