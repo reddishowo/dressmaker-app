@@ -33,11 +33,13 @@ class HomeView extends GetView<HomeController> {
               IconButton(
                 icon: Stack(
                   children: [
-                    Icon(Icons.notifications_outlined,
-                        color: themeController.isHalloweenTheme.value
-                            ? ThemeController.halloweenPrimary
-                            : Colors.black87,
-                        size: 28),
+                    Icon(
+                      Icons.notifications_outlined,
+                      color: themeController.isHalloweenTheme.value
+                          ? ThemeController.halloweenPrimary
+                          : Colors.black87,
+                      size: 28,
+                    ),
                     Positioned(
                       right: 0,
                       top: 0,
@@ -63,7 +65,10 @@ class HomeView extends GetView<HomeController> {
                     ),
                   ],
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  // Navigasi ke halaman /voucher
+                  Get.toNamed('/voucher');
+                },
               ),
               SizedBox(width: 8),
             ],
