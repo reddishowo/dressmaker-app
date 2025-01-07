@@ -7,7 +7,7 @@ class SearchView extends GetView<SearchControllers> {
   @override
   Widget build(BuildContext context) {
     final ThemeController themeController = Get.find<ThemeController>();
-    
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -38,23 +38,49 @@ class SearchView extends GetView<SearchControllers> {
                   ),
                 ],
               ),
-              child: TextField(
-                controller: controller.searchController,
-                onChanged: (_) => controller.performSearch(),
-                decoration: InputDecoration(
-                  hintText: 'Search pages, features...',
-                  hintStyle: TextStyle(color: Colors.grey[400]),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.clear, color: Colors.grey[400]),
-                    onPressed: () {
-                      controller.searchController.clear();
-                      controller.performSearch();
-                    },
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: controller.searchController,
+                      onChanged: (_) => controller.performSearch(),
+                      decoration: InputDecoration(
+                        hintText: 'Search pages, features...',
+                        hintStyle: TextStyle(color: Colors.grey[400]),
+                        prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.clear, color: Colors.grey[400]),
+                          onPressed: () {
+                            controller.searchController.clear();
+                            controller.performSearch();
+                          },
+                        ),
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      ),
+                    ),
                   ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                ),
+                  Obx(() => IconButton(
+                        icon: Icon(
+                          controller.isListening.value
+                              ? Icons.mic
+                              : Icons.mic_none,
+                          color: controller.isListening.value
+                              ? (themeController.isHalloweenTheme.value
+                                  ? ThemeController.halloweenPrimary
+                                  : Colors.blue[700])
+                              : Colors.grey[400],
+                        ),
+                        onPressed: () {
+                          if (controller.isListening.value) {
+                            controller.stopListening();
+                          } else {
+                            controller.startListening();
+                          }
+                        },
+                      )),
+                ],
               ),
             ),
             Padding(
@@ -102,7 +128,8 @@ class SearchView extends GetView<SearchControllers> {
                     itemBuilder: (context, index) {
                       var result = controller.searchResults[index];
                       return Container(
-                        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                        margin:
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
@@ -123,7 +150,8 @@ class SearchView extends GetView<SearchControllers> {
                             padding: EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               color: themeController.isHalloweenTheme.value
-                                  ? ThemeController.halloweenPrimary.withOpacity(0.1)
+                                  ? ThemeController.halloweenPrimary
+                                      .withOpacity(0.1)
                                   : Colors.blue[50],
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -178,28 +206,29 @@ class SearchView extends GetView<SearchControllers> {
           ],
         ),
         child: Obx(() => BottomNavigationBar(
-          elevation: 0,
-          type: BottomNavigationBarType.fixed,
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          selectedLabelStyle: TextStyle(fontSize: 12),
-          unselectedLabelStyle: TextStyle(fontSize: 12),
-          backgroundColor: themeController.isHalloweenTheme.value 
-              ? ThemeController.halloweenCardBg 
-              : Colors.white,
-          items: [
-            _buildNavBarItem(Icons.home_outlined, Icons.home, 'Home'),
-            _buildNavBarItem(Icons.search_outlined, Icons.search, 'Search'),
-            _buildNavBarItem(Icons.shopping_bag_outlined, Icons.shopping_bag, 'Orders'),
-            _buildNavBarItem(Icons.person_outline, Icons.person, 'Profile'),
-          ],
-          currentIndex: controller.selectedIndex.value,
-          selectedItemColor: themeController.isHalloweenTheme.value 
-              ? ThemeController.halloweenPrimary 
-              : Colors.blue[700],
-          unselectedItemColor: Colors.grey[600],
-          onTap: controller.onNavBarTapped,
-        )),
+              elevation: 0,
+              type: BottomNavigationBarType.fixed,
+              showSelectedLabels: true,
+              showUnselectedLabels: true,
+              selectedLabelStyle: TextStyle(fontSize: 12),
+              unselectedLabelStyle: TextStyle(fontSize: 12),
+              backgroundColor: themeController.isHalloweenTheme.value
+                  ? ThemeController.halloweenCardBg
+                  : Colors.white,
+              items: [
+                _buildNavBarItem(Icons.home_outlined, Icons.home, 'Home'),
+                _buildNavBarItem(Icons.search_outlined, Icons.search, 'Search'),
+                _buildNavBarItem(
+                    Icons.shopping_bag_outlined, Icons.shopping_bag, 'Orders'),
+                _buildNavBarItem(Icons.person_outline, Icons.person, 'Profile'),
+              ],
+              currentIndex: controller.selectedIndex.value,
+              selectedItemColor: themeController.isHalloweenTheme.value
+                  ? ThemeController.halloweenPrimary
+                  : Colors.blue[700],
+              unselectedItemColor: Colors.grey[600],
+              onTap: controller.onNavBarTapped,
+            )),
       ),
     );
   }
@@ -221,7 +250,8 @@ class SearchView extends GetView<SearchControllers> {
     }
   }
 
-  BottomNavigationBarItem _buildNavBarItem(IconData icon, IconData activeIcon, String label) {
+  BottomNavigationBarItem _buildNavBarItem(
+      IconData icon, IconData activeIcon, String label) {
     return BottomNavigationBarItem(
       icon: Icon(icon),
       activeIcon: Icon(activeIcon),
